@@ -1,0 +1,36 @@
+﻿@page "/car/{id}"
+@inject ICarService CarService
+<div class="media">
+    <div calls="media-img-big-wrapper mr-2">
+        <img class="media-img-big" src="@car.Image" alt="@car.Brand" />
+    </div>
+    <div class="media-body">
+        <h2 class="mb-0">@car.Brand</h2>
+        <p>@car.Description</p>
+        @if(car.OrginalPrice > car.Price)
+        {
+            <h6 class="text-muted orginal-price">$@car.OrginalPrice</h6>
+        }
+        <h4 class="prcie">
+            $@car.Price
+        </h4>
+        <button class="btn btn-primary"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart</button>
+    </div>
+</div>
+
+@code {
+    private Car car = null;
+
+    [Parameter]
+    public string Id { get; set;  }
+
+    protected override void OnInitialized()
+    {
+        if(CarService.Cars == null || CarService.Cars.Count == 0)
+        {
+            CarService.LoadCars();
+        }
+
+        car = CarService.Cars.FirstOrDefault(c => c.Id == Int32.Parse(Id));
+    }
+}
