@@ -4,9 +4,10 @@ namespace CaRental.Client.Services.CarService
 {
     interface ICarService
     {
+        event Action onChange;
         List<Car> Cars { get; set; }
 
-        void LoadCars();
-
+        Task LoadCars(string categoryUrl = null);
+        Task<Car> GetCar(int id);
     }
 }

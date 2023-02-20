@@ -1,4 +1,4 @@
-﻿@page "/car/{id}"
+﻿@page "/car/{id:int}"
 @inject ICarService CarService
 <div class="media">
     <div calls="media-img-big-wrapper mr-2">
@@ -19,18 +19,20 @@
 </div>
 
 @code {
-    private Car car = null;
+    private Car car = new Car();
 
     [Parameter]
-    public string Id { get; set;  }
+    public int Id { get; set;  }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        /*
         if(CarService.Cars == null || CarService.Cars.Count == 0)
         {
             CarService.LoadCars();
         }
+        */
 
-        car = CarService.Cars.FirstOrDefault(c => c.Id == Int32.Parse(Id));
+        car = await CarService.GetCar(Id); //Cars.FirstOrDefault(a => a.Id == Int32.Parse(Id));
     }
 }

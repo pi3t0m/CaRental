@@ -34,6 +34,15 @@ a, .btn-link {
     color: red;
 }
 
+.media {
+    display: flex;
+    flex-direction: row;
+}
+
+.media-body {
+    margin-left: 12px;
+}
+
 .media-img {
     max-height: 200px;
     max-width: 200px;

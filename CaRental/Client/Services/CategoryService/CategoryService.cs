@@ -1,19 +1,23 @@
 ﻿using CaRental.Shared;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace CaRental.Client.Services.CategoryService
 {
     public class CategoryService : ICategoryService
     {
+        private readonly HttpClient _http;
+
         public List<Category> Categories { get; set; } = new List<Category>();
 
-        public void LoadCategories()
+        public CategoryService(HttpClient http)
         {
-            Categories = new List<Category> 
-            { 
-                new Category { Id = 1, Name = "Exclusives", Url = "exclusive", Icon = "plus" },
-                new Category { Id = 2, Name = "Sports", Url = "sport", Icon = "plus" },
-                new Category { Id = 3, Name = "Oldschool", Url = "oldschool", Icon = "plus" }
-            };
+            _http = http;
+        }
+
+        public async Task LoadCategories()
+        {
+            Categories = await _http.GetFromJsonAsync<List<Category>>("api/Category");
         }
     }
 }

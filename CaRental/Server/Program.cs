@@ -1,3 +1,5 @@
+using CaRental.Server.Services.CarService;
+using CaRental.Server.Services.CategoryService;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICarService, CarService>();
 
 var app = builder.Build();
 

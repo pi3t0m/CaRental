@@ -1,11 +1,12 @@
 ﻿@page "/"
 @page "/{categoryurl}"
-@inject ICategoryService CategoryService
+@inject ICategoryService CategoryService;
+@inject ICarService CarService;
 
 @if(category !=null)
 {
     <h1>Welcome to the @category.Name section!</h1>
-    <CarList CategoryId="@category.Id" />
+    <CarList />
 }
 else
 {
@@ -21,8 +22,10 @@ else
 
     private Category category = null;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        await CarService.LoadCars(CategoryUrl);
+
         if (CategoryUrl != null)
         {
             category = CategoryService.Categories.FirstOrDefault(c => c.Url.ToLower().Equals(CategoryUrl.ToLower()));
