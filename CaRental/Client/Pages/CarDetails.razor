@@ -26,13 +26,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        /*
-        if(CarService.Cars == null || CarService.Cars.Count == 0)
-        {
-            CarService.LoadCars();
-        }
-        */
-
-        car = await CarService.GetCar(Id); //Cars.FirstOrDefault(a => a.Id == Int32.Parse(Id));
+        car = await CarService.GetCar(Id); 
     }
 }
