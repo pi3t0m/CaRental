@@ -4,6 +4,7 @@ using CaRental.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CaRental.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230221005953_CarDateFix")]
+    partial class CarDateFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,10 +40,10 @@ namespace CaRental.Server.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DateCreated")
+                    b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DateUpdated")
+                    b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -75,7 +78,8 @@ namespace CaRental.Server.Migrations
                             Id = 1,
                             Brand = "Maybach",
                             CategoryId = 1,
-                            DateCreated = new DateTime(2023, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(2023, 2, 21, 1, 59, 53, 249, DateTimeKind.Local).AddTicks(8487),
+                            DateUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "W223",
                             Image = "https://www.premiumfelgi.pl/userdata/gfx/57200.jpg",
                             IsDeleted = false,
@@ -88,7 +92,8 @@ namespace CaRental.Server.Migrations
                             Id = 2,
                             Brand = "Mercedes",
                             CategoryId = 2,
-                            DateCreated = new DateTime(2023, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(2023, 2, 21, 1, 59, 53, 249, DateTimeKind.Local).AddTicks(8531),
+                            DateUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "AMG GT 63 S E 4-door",
                             Image = "https://motofilm.pl/wp-content/uploads/2022/02/Mercedes-AMG-GT-63-S-E-Performance-4-Drzwiowe-Coupe-1.jpg",
                             IsDeleted = false,
@@ -101,7 +106,8 @@ namespace CaRental.Server.Migrations
                             Id = 3,
                             Brand = "Mercedes",
                             CategoryId = 3,
-                            DateCreated = new DateTime(2023, 2, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(2023, 2, 21, 1, 59, 53, 249, DateTimeKind.Local).AddTicks(8535),
+                            DateUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "SL500",
                             Image = "https://images8.alphacoders.com/114/1142237.jpg",
                             IsDeleted = false,
@@ -159,102 +165,6 @@ namespace CaRental.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CaRental.Shared.Edition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Editions");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "1 day"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "3 day"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "5 day"
-                        });
-                });
-
-            modelBuilder.Entity("CarEdition", b =>
-                {
-                    b.Property<int>("CarsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EditionsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CarsId", "EditionsId");
-
-                    b.HasIndex("EditionsId");
-
-                    b.ToTable("CarEdition");
-
-                    b.HasData(
-                        new
-                        {
-                            CarsId = 1,
-                            EditionsId = 1
-                        },
-                        new
-                        {
-                            CarsId = 1,
-                            EditionsId = 3
-                        },
-                        new
-                        {
-                            CarsId = 1,
-                            EditionsId = 5
-                        },
-                        new
-                        {
-                            CarsId = 2,
-                            EditionsId = 1
-                        },
-                        new
-                        {
-                            CarsId = 2,
-                            EditionsId = 3
-                        },
-                        new
-                        {
-                            CarsId = 2,
-                            EditionsId = 5
-                        },
-                        new
-                        {
-                            CarsId = 3,
-                            EditionsId = 1
-                        },
-                        new
-                        {
-                            CarsId = 3,
-                            EditionsId = 3
-                        },
-                        new
-                        {
-                            CarsId = 3,
-                            EditionsId = 5
-                        });
-                });
-
             modelBuilder.Entity("CaRental.Shared.Car", b =>
                 {
                     b.HasOne("CaRental.Shared.Category", "Category")
@@ -264,21 +174,6 @@ namespace CaRental.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("CarEdition", b =>
-                {
-                    b.HasOne("CaRental.Shared.Car", null)
-                        .WithMany()
-                        .HasForeignKey("CarsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CaRental.Shared.Edition", null)
-                        .WithMany()
-                        .HasForeignKey("EditionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

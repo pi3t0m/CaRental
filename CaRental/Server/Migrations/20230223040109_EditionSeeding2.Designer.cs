@@ -4,6 +4,7 @@ using CaRental.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CaRental.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230223040109_EditionSeeding2")]
+    partial class EditionSeeding2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,23 +177,6 @@ namespace CaRental.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Editions");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "1 day"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "3 day"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "5 day"
-                        });
                 });
 
             modelBuilder.Entity("CarEdition", b =>
@@ -206,53 +192,6 @@ namespace CaRental.Server.Migrations
                     b.HasIndex("EditionsId");
 
                     b.ToTable("CarEdition");
-
-                    b.HasData(
-                        new
-                        {
-                            CarsId = 1,
-                            EditionsId = 1
-                        },
-                        new
-                        {
-                            CarsId = 1,
-                            EditionsId = 3
-                        },
-                        new
-                        {
-                            CarsId = 1,
-                            EditionsId = 5
-                        },
-                        new
-                        {
-                            CarsId = 2,
-                            EditionsId = 1
-                        },
-                        new
-                        {
-                            CarsId = 2,
-                            EditionsId = 3
-                        },
-                        new
-                        {
-                            CarsId = 2,
-                            EditionsId = 5
-                        },
-                        new
-                        {
-                            CarsId = 3,
-                            EditionsId = 1
-                        },
-                        new
-                        {
-                            CarsId = 3,
-                            EditionsId = 3
-                        },
-                        new
-                        {
-                            CarsId = 3,
-                            EditionsId = 5
-                        });
                 });
 
             modelBuilder.Entity("CaRental.Shared.Car", b =>

@@ -7,6 +7,17 @@
     <div class="media-body">
         <h2 class="mb-0">@car.Brand</h2>
         <p>@car.Description</p>
+        @if (car.Editions != null && car.Editions.Count > 0)
+        {
+           <div class="form-group">
+               <select class="form-control">
+                    @foreach(var edition in car.Editions)
+                    {
+                        <option class="from-option">@edition.Name</option>
+                    }
+                </select>
+           </div>
+        }
         @if(car.OrginalPrice > car.Price)
         {
             <h6 class="text-muted orginal-price">$@car.OrginalPrice</h6>

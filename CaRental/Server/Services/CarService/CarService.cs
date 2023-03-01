@@ -24,7 +24,8 @@ namespace CaRental.Server.Services.CarService
 
         public async Task<Car> GetCar(int id)
         {
-            Car car = await _context.Cars.FirstOrDefaultAsync(c => c.Id == id);
+            Car car = await _context.Cars
+                .Include(c =>c.Editions).FirstOrDefaultAsync(c => c.Id == id);
             return car;
         }
 
