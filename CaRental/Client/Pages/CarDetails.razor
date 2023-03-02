@@ -7,24 +7,27 @@
     <div class="media-body">
         <h2 class="mb-0">@car.Brand</h2>
         <p>@car.Description</p>
-        @if (car.Editions != null && car.Editions.Count > 0)
+        @if (car.Variants != null && car.Variants.Count > 1)
         {
            <div class="form-group">
-               <select class="form-control">
-                    @foreach(var edition in car.Editions)
+               <select class="form-control" @bind="currentEditionId">
+                    @foreach(var variant in car.Variants)
                     {
-                        <option class="from-option">@edition.Name</option>
+                        <option value="@variant.EditionId">@variant.Edition.Name</option>
                     }
                 </select>
            </div>
         }
-        @if(car.OrginalPrice > car.Price)
+        @if(GetSelectedVariant() != null)
         {
-            <h6 class="text-muted orginal-price">$@car.OrginalPrice</h6>
+            @if (GetSelectedVariant().OrginalPrice > GetSelectedVariant().Price)
+            {
+                            <h6 class="text-muted orginal-price">$@GetSelectedVariant().OrginalPrice</h6>
+            }
+            <h4 class="prcie">
+                    $@GetSelectedVariant().Price
+            </h4> 
         }
-        <h4 class="prcie">
-            $@car.Price
-        </h4>
         <button class="btn btn-primary"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart</button>
     </div>
 </div>
@@ -32,11 +35,23 @@
 @code {
     private Car car = new Car();
 
+    private int currentEditionId = 1;
+
     [Parameter]
     public int Id { get; set;  }
 
     protected override async Task OnInitializedAsync()
     {
         car = await CarService.GetCar(Id); 
+        if(car.Variants.Count > 0)
+        {
+            currentEditionId = car.Variants[0].EditionId;
+        }
+    }
+
+    private CarVariant GetSelectedVariant()
+    {
+        var variant = car.Variants.FirstOrDefault(v => v.EditionId == currentEditionId);
+        return variant;
     }
 }

@@ -1,4 +1,5 @@
-﻿using CaRental.Shared;
+﻿using System;
+using CaRental.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaRental.Server.Data
@@ -13,9 +14,20 @@ namespace CaRental.Server.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Edition> Editions { get; set; }
+        
+        /*
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+            // ... inne opcje konfiguracji
+        }
+        */
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CarVariant>()
+                .HasKey(c => new { c.CarId, c.EditionId });
+     
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Exclusives", Url = "exclusive", Icon = "plus" },
                 new Category { Id = 2, Name = "Sports", Url = "sport", Icon = "plus" },
@@ -30,8 +42,6 @@ namespace CaRental.Server.Data
                     Brand = "Maybach",
                     Description = "W223",
                     Image = "https://www.premiumfelgi.pl/userdata/gfx/57200.jpg",
-                    Price = 900,
-                    OrginalPrice = 1000,
                     DateCreated= new DateTime(2023,02,21)
                 },
                 new Car
@@ -41,8 +51,6 @@ namespace CaRental.Server.Data
                     Brand = "Mercedes",
                     Description = "AMG GT 63 S E 4-door",
                     Image = "https://motofilm.pl/wp-content/uploads/2022/02/Mercedes-AMG-GT-63-S-E-Performance-4-Drzwiowe-Coupe-1.jpg",
-                    Price = 700,
-                    OrginalPrice = 800,
                     DateCreated = new DateTime(2023, 02, 21)
                 },
                 new Car
@@ -52,32 +60,84 @@ namespace CaRental.Server.Data
                     Brand = "Mercedes",
                     Description = "SL500",
                     Image = "https://images8.alphacoders.com/114/1142237.jpg",
-                    Price = 1000,
-                    OrginalPrice = 1100,
                     DateCreated = new DateTime(2023, 02, 21)
                 }
             );
 
             modelBuilder.Entity<Edition>().HasData(
-                    new Edition { Id = 1, Name = "1 day" },
-                  //new Edition { Id = 2, Name = "2 day" },
-                    new Edition { Id = 3, Name = "3 day" },
-                  //new Edition { Id = 4, Name = "4 day" },
-                    new Edition { Id = 5, Name = "5 day" }
+                    new Edition { Id = 1, Name = "Default" },
+                    new Edition { Id = 2, Name = "1 day" },
+                  //new Edition { Id = 3, Name = "2 day" },
+                    new Edition { Id = 4, Name = "3 day" },
+                  //new Edition { Id = 5, Name = "4 day" },
+                    new Edition { Id = 6, Name = "5 day" }   
                 );
 
-            modelBuilder.SharedTypeEntity<Dictionary<string, object>>("CarEdition")
-                .HasData(
-                    new { EditionsId = 1, CarsId = 1 },
-                    new { EditionsId = 3, CarsId = 1 },
-                    new { EditionsId = 5, CarsId = 1 },
-                    new { EditionsId = 1, CarsId = 2 },
-                    new { EditionsId = 3, CarsId = 2 },
-                    new { EditionsId = 5, CarsId = 2 },
-                    new { EditionsId = 1, CarsId = 3 },
-                    new { EditionsId = 3, CarsId = 3 },
-                    new { EditionsId = 5, CarsId = 3 }
-                );
+            modelBuilder.Entity<CarVariant>().HasData(
+                new CarVariant
+                {
+                    CarId = 1,
+                    EditionId = 2,
+                    Price = 900.00m,
+                    OrginalPrice = 1000.00m
+                },
+                new CarVariant
+                {
+                    CarId = 1,
+                    EditionId = 4,
+                    Price = 2500.00m,
+                    OrginalPrice = 3000.00m
+                },
+                new CarVariant
+                {
+                    CarId = 1,
+                    EditionId = 6,
+                    Price = 4000.00m,
+                    OrginalPrice = 5000.00m
+                },
+                new CarVariant
+                {
+                    CarId = 2,
+                    EditionId = 2,
+                    Price = 900.00m,
+                    OrginalPrice = 1000.00m
+                },
+                new CarVariant
+                {
+                    CarId = 2,
+                    EditionId = 4,
+                    Price = 2500.00m,
+                    OrginalPrice = 3000.00m
+                },
+                new CarVariant
+                {
+                    CarId = 2,
+                    EditionId = 6,
+                    Price = 4000.00m,
+                    OrginalPrice = 5000.00m
+                },
+                new CarVariant
+                {
+                    CarId = 3,
+                    EditionId = 2,
+                    Price = 900.00m,
+                    OrginalPrice = 1000.00m
+                },
+                new CarVariant
+                {
+                    CarId = 3,
+                    EditionId = 4,
+                    Price = 2500.00m,
+                    OrginalPrice = 3000.00m
+                },
+                new CarVariant
+                {
+                    CarId = 3,
+                    EditionId = 6,
+                    Price = 4000.00m,
+                    OrginalPrice = 5000.00m
+                }
+            );
         }
 
     }

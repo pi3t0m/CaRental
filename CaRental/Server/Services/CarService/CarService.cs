@@ -19,20 +19,22 @@ namespace CaRental.Server.Services.CarService
 
         public async Task<List<Car>> GetAllCars()
         {
-            return await _context.Cars.ToListAsync();
+            return await _context.Cars.Include(c => c.Variants).ToListAsync();
         }
 
         public async Task<Car> GetCar(int id)
         {
             Car car = await _context.Cars
-                .Include(c =>c.Editions).FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.Variants)
+                .ThenInclude(v => v.Edition)
+                .FirstOrDefaultAsync(c => c.Id == id);
             return car;
         }
 
         public async Task<List<Car>> GetCarsByCategory(string categoryUrl)
         {
             Category category = await _categoryService.GetCategoryByUrl(categoryUrl);
-            return await _context.Cars.Where(a => a.CategoryId == category.Id).ToListAsync();
+            return await _context.Cars.Include(c => c.Variants).Where(c => c.CategoryId == category.Id).ToListAsync();
         }
     }
 }
