@@ -3,6 +3,9 @@ using CaRental.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using CaRental.Client.Services.CategoryService;
+using Blazored.LocalStorage;
+using Blazored.Toast;
+using CaRental.Client.Services.CartService;
 
 namespace CaRental.Client
 {
@@ -17,6 +20,9 @@ namespace CaRental.Client
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<ICarService, CarService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddBlazoredToast();
 
             await builder.Build().RunAsync();
         }

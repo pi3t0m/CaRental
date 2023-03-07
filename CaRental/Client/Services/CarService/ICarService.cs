@@ -2,7 +2,7 @@
 
 namespace CaRental.Client.Services.CarService
 {
-    interface ICarService
+    public interface ICarService
     {
         event Action onChange;
         List<Car> Cars { get; set; }
