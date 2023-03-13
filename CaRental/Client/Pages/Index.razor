@@ -2,6 +2,7 @@
 @page "/{categoryurl}"
 @inject ICategoryService CategoryService;
 @inject ICarService CarService;
+@inject ISyncLocalStorageService LocalStorage
 
 @if(category !=null)
 {
@@ -10,7 +11,15 @@
 }
 else
 {
-    <h1>Welcome to CaRental!</h1>
+    <AuthorizeView>
+        <NotAuthorized>
+            <h1>Welcome to CaRental!</h1>
+        </NotAuthorized>
+        <Authorized>
+            <h1>Welcome back, @LocalStorage.GetItemAsString("username")!</h1>
+        </Authorized>
+    </AuthorizeView>
+    
     <CarList />
 }
 
