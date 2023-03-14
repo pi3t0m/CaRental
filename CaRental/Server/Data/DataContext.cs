@@ -14,7 +14,8 @@ namespace CaRental.Server.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Edition> Editions { get; set; }
-        
+        public DbSet<Stats> Stats { get; set; }
+
         /*
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

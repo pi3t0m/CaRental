@@ -7,6 +7,7 @@ using Blazored.LocalStorage;
 using Blazored.Toast;
 using CaRental.Client.Services.CartService;
 using Microsoft.AspNetCore.Components.Authorization;
+using CaRental.Client.Services.StatsService;
 
 namespace CaRental.Client
 {
@@ -27,6 +28,7 @@ namespace CaRental.Client
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+            builder.Services.AddScoped<IStatsService, StatsService>();
 
             await builder.Build().RunAsync();
         }
