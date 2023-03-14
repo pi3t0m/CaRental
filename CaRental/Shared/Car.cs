@@ -20,6 +20,7 @@ namespace CaRental.Shared
         public List<CarVariant> Variants { get; set; } = new List<CarVariant>();
         public DateTime? DateCreated { get; set; } = DateTime.Now;
         public DateTime? DateUpdated { get; set; }
+        public int Views { get; set; }
 
 
     }

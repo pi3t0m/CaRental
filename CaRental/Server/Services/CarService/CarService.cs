@@ -28,6 +28,11 @@ namespace CaRental.Server.Services.CarService
                 .Include(c => c.Variants)
                 .ThenInclude(v => v.Edition)
                 .FirstOrDefaultAsync(c => c.Id == id);
+
+            car.Views++;
+
+            await _context.SaveChangesAsync(); 
+
             return car;
         }
 
