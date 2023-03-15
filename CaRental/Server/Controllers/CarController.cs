@@ -34,5 +34,11 @@ namespace CaRental.Server.Controllers
         {
             return Ok(await _carService.GetCar(id));
         }
+
+        [HttpGet("Search/{searchText}")]
+        public async Task<ActionResult<List<Car>>> SearchCars(string searchText)
+        {
+            return Ok(await _carService.SearchCars(searchText));
+        }
     }
 }

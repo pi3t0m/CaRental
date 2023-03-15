@@ -9,5 +9,6 @@ namespace CaRental.Client.Services.CarService
 
         Task LoadCars(string categoryUrl = null);
         Task<Car> GetCar(int id);
+        Task<List<Car>> SearchCars(string searchText);
     }
 }

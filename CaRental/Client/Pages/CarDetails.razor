@@ -5,7 +5,7 @@
 @inject IToastService ToastService
 
 <div class="views">
-    <i class="oi oi-eye"></i> @car.Views.ToString("0##")
+    <i class="oi oi-eye"></i> @GetViewString()
 </div>
 <div class="media">
     <div calls="media-img-big-wrapper mr-2">
@@ -35,6 +35,11 @@
                     $@GetSelectedVariant().Price
             </h4> 
         }
+        <EditForm Model="cartItem">
+            <div class="form-group">
+                <InputNumber id="quantity" @bind-Value="cartItem.Quantity" class="form-control" style="width: 70px" />
+            </div>
+        </EditForm>
         <button class="btn btn-primary" @onclick="AddToCart"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart</button>
     </div>
 </div>
@@ -44,10 +49,12 @@
 
     private int currentEditionId = 1;
 
+    private CartItem cartItem = new CartItem { Quantity = 1 };
+
     [Parameter]
     public int Id { get; set;  }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         car = await CarService.GetCar(Id); 
         if(car.Variants.Count > 0)
@@ -64,6 +71,28 @@
 
     private async Task AddToCart()
     {
-        await CartService.AddToCart(GetSelectedVariant());
+        var carVariant = GetSelectedVariant();
+
+        cartItem.EditionId = carVariant.EditionId;
+        cartItem.EditionName = carVariant.Edition.Name;
+        cartItem.Image = car.Image;
+        cartItem.Price = carVariant.Price;
+        cartItem.CarId = carVariant.CarId;
+        cartItem.CarTitle = car.Brand;
+
+
+        await CartService.AddToCart(cartItem);
+    }
+
+    private string GetViewString()
+    {
+        if (car.Views > 1000000)
+            return $"{((float)car.Views / 1000000).ToString("#.##")}M";
+        if (car.Views > 100000)
+            return $"{((float)car.Views / 1000).ToString("#")}K";
+        if (car.Views > 1000)
+            return $"{((float)car.Views / 1000).ToString("#.##")}K";
+
+        return car.Views.ToString("0##");
     }
 }

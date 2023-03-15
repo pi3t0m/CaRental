@@ -38,5 +38,10 @@ namespace CaRental.Client.Services.CarService
         {
             return await _http.GetFromJsonAsync<Car>($"api/Car/{id}");
         }
+
+        public async Task<List<Car>> SearchCars(string searchText)
+        {
+            return await _http.GetFromJsonAsync<List<Car>>($"api/Car/Search/{searchText}");
+        }
     }
 }

@@ -22,17 +22,28 @@ namespace CaRental.Client.Services.CartService
             _toastService = toastService;
             _carService = carService;
         }
-        public async Task AddToCart(CarVariant carVariant)
+        public async Task AddToCart(CartItem item)
         {
-            var cart = await _localStorage.GetItemAsync<List<CarVariant>>("cart");
+            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
             if (cart == null)
             {
-                cart = new List<CarVariant>();
+                cart = new List<CartItem>();
             }
-            cart.Add(carVariant);
+
+            var sameItem = cart
+                .Find(x => x.CarId == item.CarId && x.EditionId == item.EditionId);
+            if (sameItem == null)
+            {
+                cart.Add(item);
+            }
+            else
+            {
+                sameItem.Quantity += item.Quantity;
+            }
+
             await _localStorage.SetItemAsync("cart", cart);
 
-            var car = await _carService.GetCar(carVariant.CarId);
+            var car = await _carService.GetCar(item.CarId);
             _toastService.ShowSuccess(car.Brand);
 
             OnChange.Invoke();
@@ -40,40 +51,18 @@ namespace CaRental.Client.Services.CartService
 
         public async Task<List<CartItem>> GetCartItems()
         {
-            var result = new List<CartItem>();
-            var cart = await _localStorage.GetItemAsync<List<CarVariant>>("cart");
+            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
             if(cart == null)
             {
-                return result;
+                return new List<CartItem>();
             }
 
-            foreach (var item in cart)
-            {
-                var car = await _carService.GetCar(item.CarId);
-                var cartItem = new CartItem
-                {
-                    CarId = car.Id,
-                    CarTitle = car.Brand,
-                    Image = car.Image,
-                    EditionId = item.EditionId
-                };
-
-                var variant = car.Variants.Find(v => v.EditionId == item.EditionId);
-                if (variant != null)
-                {
-                    cartItem.EditionName = variant.Edition?.Name;
-                    cartItem.Price = variant.Price;
-                }
-
-                result.Add(cartItem);
-            }
-
-            return result;
+            return cart;
         }
 
         public async Task DeleteItem(CartItem item)
         {
-            var cart = await _localStorage.GetItemAsync<List<CarVariant>>("cart");
+            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
             if (cart == null)
             {
                 return;
@@ -83,6 +72,12 @@ namespace CaRental.Client.Services.CartService
             cart.Remove(cartItem);
 
             await _localStorage.SetItemAsync("cart", cart);
+            OnChange.Invoke();
+        }
+
+        public async Task EmptyCart()
+        {
+            await _localStorage.RemoveItemAsync("cart");
             OnChange.Invoke();
         }
     }

@@ -41,5 +41,12 @@ namespace CaRental.Server.Services.CarService
             Category category = await _categoryService.GetCategoryByUrl(categoryUrl);
             return await _context.Cars.Include(c => c.Variants).Where(c => c.CategoryId == category.Id).ToListAsync();
         }
+
+        public async Task<List<Car>> SearchCars(string searchText)
+        {
+            return await _context.Cars
+                .Where(c => c.Brand.Contains(searchText) || c.Description.Contains(searchText))
+                .ToListAsync();
+        }
     }
 }
