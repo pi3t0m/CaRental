@@ -2,6 +2,7 @@
 using Blazored.Toast.Services;
 using CaRental.Client.Services.CarService;
 using CaRental.Shared;
+using System.Net.Http.Json;
 
 namespace CaRental.Client.Services.CartService
 {
@@ -10,17 +11,20 @@ namespace CaRental.Client.Services.CartService
         private readonly ILocalStorageService _localStorage;
         private readonly IToastService _toastService;
         private readonly ICarService _carService;
+        private readonly HttpClient _http;
 
         public event Action OnChange;
 
         public CartService(
             ILocalStorageService localStorage,
             IToastService toastService,
-            ICarService carService)
+            ICarService carService,
+            HttpClient http)
         {
             _localStorage = localStorage;
             _toastService = toastService;
             _carService = carService;
+            _http = http;
         }
         public async Task AddToCart(CartItem item)
         {
@@ -79,6 +83,13 @@ namespace CaRental.Client.Services.CartService
         {
             await _localStorage.RemoveItemAsync("cart");
             OnChange.Invoke();
+        }
+
+        public async Task<string> Checkout()
+        {
+            var result = await _http.PostAsJsonAsync("api/payment/checkout", await GetCartItems());
+            var url = await result.Content.ReadAsStringAsync();
+            return url;
         }
     }
 }

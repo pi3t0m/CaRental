@@ -1,6 +1,7 @@
 using CaRental.Server.Data;
 using CaRental.Server.Services.CarService;
 using CaRental.Server.Services.CategoryService;
+using CaRental.Server.Services.PaymentService;
 using CaRental.Server.Services.StatsService;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IStatsService, StatsService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 var app = builder.Build();
 
