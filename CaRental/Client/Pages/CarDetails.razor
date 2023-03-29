@@ -4,6 +4,12 @@
 @inject ILocalStorageService LocalStorage
 @inject IToastService ToastService
 
+@if (CarService.Cars == null || CarService.Cars.Count == 0)
+{
+    <span>Loading cars...</span>
+}
+else
+{
 <div class="views">
     <i class="oi oi-eye"></i> @GetViewString()
 </div>
@@ -43,6 +49,9 @@
         <button class="btn btn-primary" @onclick="AddToCart"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart</button>
     </div>
 </div>
+}
+    
+
 
 @code {
     private Car car = new Car();

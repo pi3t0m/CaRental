@@ -1,3 +1,4 @@
+global using CaRental.Shared;
 using CaRental.Server.Data;
 using CaRental.Server.Services.CarService;
 using CaRental.Server.Services.CategoryService;

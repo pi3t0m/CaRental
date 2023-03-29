@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace CaRental.Shared
 {
-    internal class ServiceResponse
+    internal class ServiceResponse<T>
     {
+        public T? Data { get; set; }
+        public bool Success { get; set; } = true;
+        public string Message { get; set; } = string.Empty;
+
     }
 }
