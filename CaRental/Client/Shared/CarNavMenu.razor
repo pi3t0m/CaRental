@@ -40,7 +40,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await CategoryService.LoadCategories();
+        await CategoryService.GetCategories();
     }
 
     private async void Logout()

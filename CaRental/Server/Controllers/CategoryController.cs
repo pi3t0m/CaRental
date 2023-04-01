@@ -18,9 +18,10 @@ namespace CaRental.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Category>>> GetCategories()
+        public async Task<ActionResult<ServiceResponse<List<Category>>>> GetCategories()
         {
-            return Ok(await _categoryService.GetCategories());
+            var result = await _categoryService.GetCategories();
+            return Ok(result);
         }
     }
 }

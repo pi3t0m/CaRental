@@ -1,0 +1,45 @@
+﻿@inject ICarService CarService
+@implements IDisposable
+
+<center><h2>Top Cars of Today</h2></center>
+@if(CarService.Cars == null || CarService.Cars.Count == 0)
+{
+    <span>@CarService.Message</span>
+}
+else
+{
+    <div class="container">
+        @foreach ( var car in CarService.Cars)
+        {
+            @if(car.Featured)
+            {
+                <div class="featured-car">
+                    <div>
+                        <a href="car/@car.Id">
+                           <img src="@car.Image">
+                        </a>
+                    </div>
+                    <h4><a href="car/@car.Id">@car.Brand</a></h4>
+                    @if (car.Variants != null && car.Variants.Count > 0)
+                    {
+                        <h5 class="price">
+                            $@car.Variants[0].Price
+                        </h5>
+                    }
+                </div>
+            }
+        }
+    </div>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        CarService.CarsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CarService.CarsChanged -= StateHasChanged;
+    }
+}

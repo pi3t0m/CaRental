@@ -1,7 +1,14 @@
 ﻿@inject ICarService CarService
 @implements IDisposable
 
-<ul class="list-unstyled">
+
+@if (CarService.Cars == null || CarService.Cars.Count == 0)
+{
+    <span>@CarService.Message</span>
+}
+else
+{
+   <ul class="list-unstyled">
     @foreach (var car in CarService.Cars)
     {
         <li class="media my-3">
@@ -21,23 +28,23 @@
             </div>
         </li>
     }
-</ul>
+    </ul> 
+}
+
 
 @code {
-    //[Parameter]
-    //public int? CategoryId { get; set; } = null;
-
     protected override void OnInitialized()
     {
-        //await CarService.LoadCars();
-        CarService.onChange += StateHasChanged;
-    }
+        CarService.CarsChanged += StateHasChanged;
 
+    }
+  
     public void Dispose()
     {
-        CarService.onChange -= StateHasChanged;
+        CarService.CarsChanged -= StateHasChanged;
     }
-
+    
+    
     private string GetPriceText(Car car)
     {
         var variants = car.Variants;
@@ -45,11 +52,12 @@
         {
             return string.Empty;
         }
-        else if (variants.Count ==1)
+        else if (variants.Count == 1)
         {
             return $"${variants[0].Price}";
         }
         decimal minPrice = variants.Min(v => v.Price);
         return $"Starting at ${minPrice}";
     }
+    
 }

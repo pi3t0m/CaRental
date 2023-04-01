@@ -8,16 +8,18 @@ namespace CaRental.Client.Services.CategoryService
     {
         private readonly HttpClient _http;
 
-        public List<Category> Categories { get; set; } = new List<Category>();
-
         public CategoryService(HttpClient http)
         {
             _http = http;
         }
 
-        public async Task LoadCategories()
+        public List<Category> Categories { get; set; } = new List<Category>();
+
+        public async Task GetCategories()
         {
-            Categories = await _http.GetFromJsonAsync<List<Category>>("api/Category");
+            var resposne = await _http.GetFromJsonAsync<ServiceResponse<List<Category>>>("api/Category");
+            if (resposne != null && resposne.Data != null) 
+            Categories = resposne.Data;
         }
     }
 }

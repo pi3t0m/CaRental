@@ -5,8 +5,6 @@ namespace CaRental.Server.Services.CategoryService
 {
     public interface ICategoryService
     {
-        Task<List<Category>> GetCategories();
-
-        Task<Category> GetCategoryByUrl(string categoryUrl);
+        Task<ServiceResponse<List<Category>>> GetCategories();
     }
 }

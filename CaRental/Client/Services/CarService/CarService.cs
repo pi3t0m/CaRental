@@ -12,36 +12,48 @@ namespace CaRental.Client.Services.CarService
     {
         private readonly HttpClient _http;
 
-        public event Action onChange;
+        public event Action CarsChanged;
 
         public List<Car> Cars { get; set; } = new List<Car>();
+        public string Message { get; set; } = "Loading cars...";
 
         public CarService(HttpClient http) 
         {
             _http = http;
         }
-        public async Task LoadCars(string categoryUrl = null)
+        public async Task<ServiceResponse<Car>> GetCar(int id)
         {
-            if(categoryUrl == null)
-            {
-                Cars = await _http.GetFromJsonAsync<List<Car>>($"api/Car/");
-            }
-            else
-            {
-                Cars = await _http.GetFromJsonAsync<List<Car>>($"api/Car/Category/{categoryUrl}");
-            }
-            onChange.Invoke();
+            var result = await _http
+                .GetFromJsonAsync<ServiceResponse<Car>>($"api/Car/{id}");
+            return result;
+        }
+        public async Task GetCars(string? categoryUrl = null)
+        {
+            var result = categoryUrl == null ?
+                await _http.GetFromJsonAsync<ServiceResponse<List<Car>>>("api/Car/Featured") :
+                await _http.GetFromJsonAsync<ServiceResponse<List<Car>>>($"api/Car/Category/{categoryUrl}");
+            if (result != null && result.Data != null)
+                Cars = result.Data;
 
+            CarsChanged.Invoke();
         }
 
-        public async Task<Car> GetCar(int id)
+        
+        public async Task<List<string>> GetCarSearchSuggestions(string searchText)
         {
-            return await _http.GetFromJsonAsync<Car>($"api/Car/{id}");
+            var result = await _http.
+                GetFromJsonAsync<ServiceResponse<List<string>>>($"api/Car/SearchSuggestions/{searchText}");
+            return result.Data;
         }
 
-        public async Task<List<Car>> SearchCars(string searchText)
+        public async Task SearchCars(string searchText)
         {
-            return await _http.GetFromJsonAsync<List<Car>>($"api/Car/Search/{searchText}");
+            var result = await _http
+                .GetFromJsonAsync<ServiceResponse<List<Car>>>($"api/Car/Search/{searchText}");
+            if (result != null && result.Data != null)
+                Cars = result.Data;
+            if (Cars.Count == 0) Message = "No cars found.";
+            CarsChanged?.Invoke();
         }
     }
 }

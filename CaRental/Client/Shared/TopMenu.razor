@@ -4,7 +4,7 @@
 @inject NavigationManager NavigationManager
 @implements IDisposable
 
-<BlazoredTypeahead SearchMethod="@SearchCar"
+@*<BlazoredTypeahead SearchMethod="@SearchCar"
                    TValue="Car"
                    TItem="Car"
                    Value="selectedCar"
@@ -20,7 +20,7 @@
     <NotFoundTemplate>
         Sorry, there weren't any cars found.
     </NotFoundTemplate>
-</BlazoredTypeahead>
+</BlazoredTypeahead>*@
 
 <a href="cart" class="btn btn-info">
     <i calss="oi oi-cart"></i>
@@ -53,10 +53,11 @@
         selectedCar = car;
         NavigationManager.NavigateTo($"car/{selectedCar.Id}");
     }
-
+    /*
     private async Task<IEnumerable<Car>> SearchCar(string searchText)
     {
         var response = await Carservice.SearchCars(searchText);
         return response;
     }
+    */
 }

@@ -1,5 +1,13 @@
-﻿<h3>HomeButton</h3>
+﻿@inject NavigationManager NavigationManager
+
+<button @onclick="GoToHome"
+    class="btn btn-outline-primary home-button">
+    CaRental
+</button>
 
 @code {
-
+    private void GoToHome()
+    {
+        NavigationManager.NavigateTo("");
+    }
 }

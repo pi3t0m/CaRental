@@ -4,49 +4,42 @@
 @inject ILocalStorageService LocalStorage
 @inject IToastService ToastService
 
-@if (CarService.Cars == null || CarService.Cars.Count == 0)
+@if (car == null)
 {
-    <span>Loading cars...</span>
+    <span>@message</span>
 }
 else
 {
-<div class="views">
-    <i class="oi oi-eye"></i> @GetViewString()
-</div>
 <div class="media">
-    <div calls="media-img-big-wrapper mr-2">
-        <img class="media-img-big" src="@car.Image" alt="@car.Brand" />
+    <div calls="media-img-wrapper mr-2">
+        <img class="media-img" src="@car.Image" alt="@car.Brand" />
     </div>
     <div class="media-body">
         <h2 class="mb-0">@car.Brand</h2>
         <p>@car.Description</p>
-        @if (car.Variants != null && car.Variants.Count > 1)
+        @if(car.Variants != null && car.Variants.Count > 1)
         {
-           <div class="form-group">
-               <select class="form-control" @bind="currentEditionId">
-                    @foreach(var variant in car.Variants)
+            <div class="mb-3">
+                <select class="form-select" @bind="currentEditionId">
+                    @foreach (var variant in car.Variants)
                     {
                         <option value="@variant.EditionId">@variant.Edition.Name</option>
                     }
                 </select>
-           </div>
+            </div>
         }
         @if(GetSelectedVariant() != null)
         {
             @if (GetSelectedVariant().OrginalPrice > GetSelectedVariant().Price)
             {
-                            <h6 class="text-muted orginal-price">$@GetSelectedVariant().OrginalPrice</h6>
+                <h6 class="text-muted orginal-price">
+                    $@GetSelectedVariant().OrginalPrice
+                </h6>
             }
-            <h4 class="prcie">
-                    $@GetSelectedVariant().Price
+            <h4 class="price">
+                $@GetSelectedVariant().Price
             </h4> 
         }
-        <EditForm Model="cartItem">
-            <div class="form-group">
-                <InputNumber id="quantity" @bind-Value="cartItem.Quantity" class="form-control" style="width: 70px" />
-            </div>
-        </EditForm>
-        <button class="btn btn-primary" @onclick="AddToCart"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart</button>
     </div>
 </div>
 }
@@ -54,8 +47,8 @@ else
 
 
 @code {
-    private Car car = new Car();
-
+    private Car? car = null;
+    private string message = string.Empty;
     private int currentEditionId = 1;
 
     private CartItem cartItem = new CartItem { Quantity = 1 };
@@ -65,10 +58,20 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        car = await CarService.GetCar(Id); 
-        if(car.Variants.Count > 0)
+        message = "Loading cars...";
+
+        var result = await CarService.GetCar(Id);
+        if(!result.Success)
         {
-            currentEditionId = car.Variants[0].EditionId;
+            message = result.Message;
+        }
+        else
+        {
+            car = result.Data;
+            if (car.Variants.Count > 0)
+            {
+                currentEditionId = car.Variants[0].EditionId;
+            }
         }
     }
 
@@ -78,30 +81,4 @@ else
         return variant;
     }
 
-    private async Task AddToCart()
-    {
-        var carVariant = GetSelectedVariant();
-
-        cartItem.EditionId = carVariant.EditionId;
-        cartItem.EditionName = carVariant.Edition.Name;
-        cartItem.Image = car.Image;
-        cartItem.Price = carVariant.Price;
-        cartItem.CarId = carVariant.CarId;
-        cartItem.CarTitle = car.Brand;
-
-
-        await CartService.AddToCart(cartItem);
-    }
-
-    private string GetViewString()
-    {
-        if (car.Views > 1000000)
-            return $"{((float)car.Views / 1000000).ToString("#.##")}M";
-        if (car.Views > 100000)
-            return $"{((float)car.Views / 1000).ToString("#")}K";
-        if (car.Views > 1000)
-            return $"{((float)car.Views / 1000).ToString("#.##")}K";
-
-        return car.Views.ToString("0##");
-    }
 }

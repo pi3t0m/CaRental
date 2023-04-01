@@ -15,7 +15,7 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                Home
             </NavLink>
         </div>
         <li class="dropdown-divider"></li>
@@ -23,25 +23,10 @@
         {
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="@category.Url">
-                    <span class="oi oi-@category.Icon" aria-hidden="true"></span> @category.Name
+                    @category.Name
                 </NavLink>
             </div>
         }
-        <li class="dropdown-divider"></li>
-        <li class="nav-item px-3">
-            <AuthorizeView>
-                <NotAuthorized>
-                    <NavLink class="nav-link" href="login">
-                        <span class="oi oi-account-login" aria-hidden="true"></span> Login
-                    </NavLink>
-                </NotAuthorized>
-                <Authorized>
-                    <a class="nav-link" @onclick="Logout" style="cursor: pointer">
-                        <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
-                    </a>
-                </Authorized>
-            </AuthorizeView>
-        </li>
     </nav>
 </div>
 
@@ -57,7 +42,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await CategoryService.LoadCategories();
+        await CategoryService.GetCategories();
     }
 
     private async void Logout()

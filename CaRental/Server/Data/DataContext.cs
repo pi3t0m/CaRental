@@ -11,10 +11,7 @@ namespace CaRental.Server.Data
 
         }
 
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Car> Cars { get; set; }
-        public DbSet<Edition> Editions { get; set; }
-        public DbSet<Stats> Stats { get; set; }
+        
 
         /*
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,11 +25,38 @@ namespace CaRental.Server.Data
         {
             modelBuilder.Entity<CarVariant>()
                 .HasKey(c => new { c.CarId, c.EditionId });
-     
+
+            modelBuilder.Entity<Edition>().HasData(
+                new Edition { Id = 1, Name = "Default" },
+                new Edition { Id = 2, Name = "1 day" },
+              //new Edition { Id = 3, Name = "2 day" },
+                new Edition { Id = 4, Name = "3 day" },
+              //new Edition { Id = 5, Name = "4 day" },
+                new Edition { Id = 6, Name = "5 day" }
+                );
+
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Exclusives", Url = "exclusive", Icon = "plus" },
-                new Category { Id = 2, Name = "Sports", Url = "sport", Icon = "plus" },
-                new Category { Id = 3, Name = "Oldschool", Url = "oldschool", Icon = "plus" }
+                new Category 
+                { 
+                    Id = 1,
+                    Name = "Exclusives",
+                    Url = "exclusive",
+                    Icon = "plus" 
+                },
+                new Category 
+                { 
+                    Id = 2,
+                    Name = "Sports",
+                    Url = "sport",
+                    Icon = "plus" 
+                },
+                new Category 
+                { 
+                    Id = 3,
+                    Name = "Oldschool",
+                    Url = "oldschool",
+                    Icon = "plus"
+                }
             );
 
             modelBuilder.Entity<Car>().HasData(
@@ -43,7 +67,8 @@ namespace CaRental.Server.Data
                     Brand = "Maybach",
                     Description = "W223",
                     Image = "https://www.premiumfelgi.pl/userdata/gfx/57200.jpg",
-                    DateCreated= new DateTime(2023,02,21)
+                    DateCreated = new DateTime(2023, 02, 21),
+                    Featured = true
                 },
                 new Car
                 {
@@ -61,18 +86,10 @@ namespace CaRental.Server.Data
                     Brand = "Mercedes",
                     Description = "SL500",
                     Image = "https://images8.alphacoders.com/114/1142237.jpg",
-                    DateCreated = new DateTime(2023, 02, 21)
+                    DateCreated = new DateTime(2023, 02, 21),
+                    Featured = true
                 }
-            );
-
-            modelBuilder.Entity<Edition>().HasData(
-                    new Edition { Id = 1, Name = "Default" },
-                    new Edition { Id = 2, Name = "1 day" },
-                  //new Edition { Id = 3, Name = "2 day" },
-                    new Edition { Id = 4, Name = "3 day" },
-                  //new Edition { Id = 5, Name = "4 day" },
-                    new Edition { Id = 6, Name = "5 day" }   
-                );
+            ); 
 
             modelBuilder.Entity<CarVariant>().HasData(
                 new CarVariant
@@ -138,8 +155,13 @@ namespace CaRental.Server.Data
                     Price = 4000.00m,
                     OrginalPrice = 5000.00m
                 }
-            );
+                );
         }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<Edition> Editions { get; set; }
+        public DbSet<CarVariant> CarVariants { get; set; }
+        public DbSet<Stats> Stats { get; set; }
 
     }
 }

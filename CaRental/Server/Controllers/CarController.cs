@@ -18,27 +18,45 @@ namespace CaRental.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Car>>> GetAllCars() 
+        public async Task<ActionResult<ServiceResponse<List<Car>>>> GetCars() 
         {
-            return Ok(await _carService.GetAllCars());
-        }
-
-        [HttpGet("Category/{categoryUrl}")]
-        public async Task<ActionResult<List<Car>>> GetCarsByCategory(string categoryUrl)
-        {
-            return Ok(await _carService.GetCarsByCategory(categoryUrl));
+            var result = await _carService.GetCarsAsync();
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Car>> GetCar(int id)
+        public async Task<ActionResult<ServiceResponse<Car>>> GetCar(int id)
         {
-            return Ok(await _carService.GetCar(id));
+            var result = await _carService.GetCarAsync(id);
+            return Ok(result);
+        }
+
+        [HttpGet("Category/{categoryUrl}")]
+        public async Task<ActionResult<ServiceResponse<List<Car>>>> GetCarsByCategory(string categoryUrl)
+        {
+            var result = await _carService.GetCarsByCategory(categoryUrl);
+            return Ok(result);
         }
 
         [HttpGet("Search/{searchText}")]
-        public async Task<ActionResult<List<Car>>> SearchCars(string searchText)
+        public async Task<ActionResult<ServiceResponse<List<Car>>>> SearchCars(string searchText)
         {
-            return Ok(await _carService.SearchCars(searchText));
+            var result = await _carService.SearchCars(searchText);
+            return Ok(result);
+        }
+
+        [HttpGet("SearchSuggestions/{searchText}")]
+        public async Task<ActionResult<ServiceResponse<List<Car>>>> GetCarSearchSuggestions(string searchText)
+        {
+            var result = await _carService.GetCarSearchSuggestions(searchText);
+            return Ok(result);
+        }
+
+        [HttpGet("Featured")]
+        public async Task<ActionResult<ServiceResponse<List<Car>>>> GetFeaturedCars()
+        {
+            var result = await _carService.GetFeaturedCars();
+            return Ok(result);
         }
     }
 }

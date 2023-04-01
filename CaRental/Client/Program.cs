@@ -1,8 +1,10 @@
-using CaRental.Client.Services.CarService;
+global using CaRental.Shared;
+global using System.Net.Http.Json;
+global using CaRental.Client.Services.CarService;
+global using CaRental.Client.Services.CategoryService;
 using CaRental.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using CaRental.Client.Services.CategoryService;
 using Blazored.LocalStorage;
 using Blazored.Toast;
 using CaRental.Client.Services.CartService;

@@ -47,8 +47,8 @@ namespace CaRental.Client.Services.CartService
 
             await _localStorage.SetItemAsync("cart", cart);
 
-            var car = await _carService.GetCar(item.CarId);
-            _toastService.ShowSuccess(car.Brand);
+            //var car = await _carService.GetCar(item.CarId);
+            //_toastService.ShowSuccess(car.Brand);
 
             OnChange.Invoke();
         }

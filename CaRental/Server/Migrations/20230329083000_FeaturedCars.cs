@@ -5,46 +5,45 @@
 namespace CaRental.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class CarViews : Migration
+    public partial class FeaturedCars : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "Views",
+            migrationBuilder.AddColumn<bool>(
+                name: "Featured",
                 table: "Cars",
-                type: "int",
+                type: "bit",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: false);
 
             migrationBuilder.UpdateData(
                 table: "Cars",
                 keyColumn: "Id",
-
                 keyValue: 1,
-                column: "Views",
-                value: 0);
+                column: "Featured",
+                value: true);
 
             migrationBuilder.UpdateData(
                 table: "Cars",
                 keyColumn: "Id",
                 keyValue: 2,
-                column: "Views",
-                value: 0);
+                column: "Featured",
+                value: false);
 
             migrationBuilder.UpdateData(
                 table: "Cars",
                 keyColumn: "Id",
                 keyValue: 3,
-                column: "Views",
-                value: 0);
+                column: "Featured",
+                value: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Views",
+                name: "Featured",
                 table: "Cars");
         }
     }

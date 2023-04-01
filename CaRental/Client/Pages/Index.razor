@@ -1,51 +1,36 @@
 ﻿@page "/"
-@page "/{categoryurl}"
-@inject ICategoryService CategoryService;
+@page "/search/{searchText}"
+@page "/{categoryUrl}"
 @inject ICarService CarService;
-@inject ISyncLocalStorageService LocalStorage
-@inject IStatsService StatsService
 
-@if(category !=null)
+<PageTitle>My CaRental</PageTitle>
+@if(SearchText == null && CategoryUrl == null)
 {
-    <h1>Welcome to the @category.Name section!</h1>
-    <CarList />
+    <FeaturedCars />
 }
 else
 {
-    <AuthorizeView>
-        <NotAuthorized>
-            <h1>Welcome to CaRental!</h1>
-        </NotAuthorized>
-        <Authorized>
-            <h1>Welcome back, @LocalStorage.GetItemAsString("username")!</h1>
-        </Authorized>
-    </AuthorizeView>
-    
     <CarList />
 }
-
 
 @code 
 {
     [Parameter]
-    public string CategoryUrl { get; set;  }
+    public string? CategoryUrl { get; set; } = null;
 
-    private Category category = null;
+    [Parameter]
+    public string? SearchText { get; set; } = null;
 
     protected override async Task OnParametersSetAsync()
     {
-        await CarService.LoadCars(CategoryUrl);
-
-        if (CategoryUrl != null)
+        if(SearchText != null)
         {
-            category = CategoryService.Categories.FirstOrDefault(c => c.Url.ToLower().Equals(CategoryUrl.ToLower()));
+            await CarService.SearchCars(SearchText);
         }
         else
         {
-            category = null;
+            await CarService.GetCars(CategoryUrl);
         }
-
-        await StatsService.IncrementVisits();
-        await StatsService.GetVisits();
+        
     }
 }

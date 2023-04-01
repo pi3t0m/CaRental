@@ -14,14 +14,14 @@ namespace CaRental.Server.Services.CategoryService
         {
             _context = context;
         }
-        public async Task<List<Category>> GetCategories()
-        {
-            return await _context.Categories.ToListAsync();
-        }
 
-        public async Task<Category> GetCategoryByUrl(string categoryUrl)
+        public async Task<ServiceResponse<List<Category>>> GetCategories()
         {
-            return await _context.Categories.FirstOrDefaultAsync(c => c.Url.ToLower().Equals(categoryUrl.ToLower()));
+            var categories = await _context.Categories.ToListAsync();
+            return new ServiceResponse<List<Category>>
+            {
+                Data = categories
+            };
         }
     }
 }

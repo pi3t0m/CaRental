@@ -1,12 +1,12 @@
-﻿using CaRental.Shared;
-
-namespace CaRental.Server.Services.CarService
+﻿namespace CaRental.Server.Services.CarService
 {
     public interface ICarService
     {
-        Task<List<Car>> GetAllCars();
-        Task<List<Car>> GetCarsByCategory(string CategoryUrl);
-        Task<Car> GetCar(int id);
-        Task<List<Car>> SearchCars(string searchText);
+        Task<ServiceResponse<List<Car>>> GetCarsAsync();
+        Task<ServiceResponse<Car>> GetCarAsync(int id);
+        Task<ServiceResponse<List<Car>>> GetCarsByCategory(string CategoryUrl);
+        Task<ServiceResponse<List<Car>>> SearchCars(string searchText);
+        Task<ServiceResponse<List<string>>> GetCarSearchSuggestions(string searchText);
+        Task<ServiceResponse<List<Car>>> GetFeaturedCars();
     }
 }
