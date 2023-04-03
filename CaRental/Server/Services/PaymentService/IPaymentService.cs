@@ -5,6 +5,6 @@ namespace CaRental.Server.Services.PaymentService
 {
     public interface IPaymentService
     {
-        Session CreateCheckoutSession(List<CartItem> cartItems);
+      //  Session CreateCheckoutSession(List<CartItem> cartItems);
     }
 }

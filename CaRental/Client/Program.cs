@@ -21,11 +21,11 @@ namespace CaRental.Client
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
+            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<ICarService, CarService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
-            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddBlazoredToast();
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();

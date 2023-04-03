@@ -1,25 +1,25 @@
-﻿.item-container {
+﻿.container {
     display: flex;
     padding: 6px;
 }
 
-.item-image-wrapper {
+.image-wrapper {
     width: 150px;
     text-align: center;
 }
 
-.item-image {
+.image {
     max-height: 150px;
     max-width: 150px;
     padding: 6px;
 }
 
-.item-name {
+.name {
     flex-grow: 1;
     padding: 6px;
 }
 
-.item-price {
+.cart-car-price {
     font-weight: 600;
     text-align: right;
 }
@@ -31,7 +31,7 @@
     color: red;
     font-size: 12px;
 }
-
+    
     .btn-delete:hover {
         text-decoration: underline;
     }

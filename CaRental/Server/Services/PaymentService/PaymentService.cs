@@ -13,8 +13,9 @@ namespace CaRental.Server.Services.PaymentService
             StripeConfiguration.ApiKey = "sk_test_51Mm2kKF0PDfFtOyogmRyX85qgph73wgy3fSpGXQva87Dn6FZEC9WlLovRs9rOJIYp6gll1srcjKEZgYNoeGDvsMJ00LOf4yWAC";
         }
 
-        public Session CreateCheckoutSession(List<CartItem> cartItems)
+       /* public Session CreateCheckoutSession(List<CartItem> cartItems)
         {
+            
             var lineItems = new List<SessionLineItemOptions>();
             cartItems.ForEach(ci => lineItems.Add(new SessionLineItemOptions
             {
@@ -42,6 +43,6 @@ namespace CaRental.Server.Services.PaymentService
             var service = new SessionService();
             Session session = service.Create(options);
             return session;
-        }
+        } */
     }
 }

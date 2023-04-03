@@ -2,6 +2,7 @@ global using CaRental.Shared;
 global using CaRental.Server.Data;
 global using CaRental.Server.Services.CarService;
 global using CaRental.Server.Services.CategoryService;
+global using CaRental.Server.Services.CartService;
 using CaRental.Server.Services.PaymentService;
 using CaRental.Server.Services.StatsService;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -19,6 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IStatsService, StatsService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 

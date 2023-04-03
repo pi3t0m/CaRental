@@ -38,10 +38,10 @@ namespace CaRental.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Search/{searchText}")]
-        public async Task<ActionResult<ServiceResponse<List<Car>>>> SearchCars(string searchText)
+        [HttpGet("Search/{searchText}/{page}")]
+        public async Task<ActionResult<ServiceResponse<CarSearchResultDTO>>> SearchCars(string searchText, int page = 1)
         {
-            var result = await _carService.SearchCars(searchText);
+            var result = await _carService.SearchCars(searchText, page);
             return Ok(result);
         }
 

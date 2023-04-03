@@ -7,9 +7,12 @@ namespace CaRental.Client.Services.CarService
         event Action CarsChanged;
         List<Car> Cars { get; set; }
         string Message { get; set; }
+        int CurrentPage { get; set; }
+        int PageCount { get; set; }
+        string LastSearchText { get; set; }
         Task GetCars(string? categoryUrl = null);
         Task<ServiceResponse<Car>> GetCar(int id);
-        Task SearchCars(string searchText);
+        Task SearchCars(string searchText, int page);
         Task<List<string>> GetCarSearchSuggestions(string searchText);
     }
 }

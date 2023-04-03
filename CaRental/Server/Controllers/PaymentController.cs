@@ -16,6 +16,7 @@ namespace CaRental.Server.Controllers
             _paymentService = paymentService;
         }
 
+        /*
         [HttpPost("checkout")]
         public ActionResult CreateCheckoutSession(List<CartItem> cartItems)
         {
@@ -23,5 +24,6 @@ namespace CaRental.Server.Controllers
             return Ok(session.Url);
 
         }
+        */
     }
 }

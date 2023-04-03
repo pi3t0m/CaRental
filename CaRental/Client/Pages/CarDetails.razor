@@ -40,6 +40,9 @@ else
                 $@GetSelectedVariant().Price
             </h4> 
         }
+        <button class="btn btn-primary" @onclick="AddToCart">
+            <i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart
+        </button>
     </div>
 </div>
 }
@@ -51,7 +54,7 @@ else
     private string message = string.Empty;
     private int currentEditionId = 1;
 
-    private CartItem cartItem = new CartItem { Quantity = 1 };
+    //private CartItem cartItem = new CartItem { Quantity = 1 };
 
     [Parameter]
     public int Id { get; set;  }
@@ -81,4 +84,15 @@ else
         return variant;
     }
 
+    private async Task AddToCart()
+    {
+        var carVarinat = GetSelectedVariant();
+        var cartItem = new CartItem
+            {
+                CarId = carVarinat.CarId,
+                EditionId = carVarinat.EditionId
+            };
+
+        await CartService.AddToCart(cartItem);
+    }
 }

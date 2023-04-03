@@ -21,6 +21,10 @@
     text-decoration: line-through;
 }
 
+.alert-success {
+    max-width: 250px;
+}
+
 @media (max-width: 1023.98px) {
     .media {
         flex-direction: column;

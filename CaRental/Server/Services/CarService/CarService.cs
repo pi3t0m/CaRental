@@ -95,11 +95,27 @@ namespace CaRental.Server.Services.CarService
             return new ServiceResponse<List<string>> { Data = result };
         }
 
-        public async Task<ServiceResponse<List<Car>>> SearchCars(string searchText)
+        public async Task<ServiceResponse<CarSearchResultDTO>> SearchCars(string searchText, int page)
         {
-            var response = new ServiceResponse<List<Car>>
+            var pageResults = 2f;
+            var pageCount = Math.Ceiling((await FindCarsBySearchText(searchText)).Count / pageResults);
+            var cars = await _context.Cars
+                                .Where(c => c.Brand.ToLower().Contains(searchText.ToLower())
+                                ||
+                                c.Description.ToLower().Contains(searchText.ToLower()))
+                                .Include(c => c.Variants)
+                                .Skip((page -1) * (int)pageResults)
+                                .Take((int)pageResults)
+                                .ToListAsync();
+
+            var response = new ServiceResponse<CarSearchResultDTO>
             {
-                Data = await FindCarsBySearchText(searchText)
+                Data = new CarSearchResultDTO
+                {
+                    Cars = cars,
+                    CurrentPage = page,
+                    Pages = (int)pageCount
+                }
             };
 
             return response;

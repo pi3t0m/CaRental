@@ -9,87 +9,65 @@ namespace CaRental.Client.Services.CartService
     public class CartService : ICartService
     {
         private readonly ILocalStorageService _localStorage;
-        private readonly IToastService _toastService;
-        private readonly ICarService _carService;
         private readonly HttpClient _http;
+
+        public CartService(ILocalStorageService localStorage, HttpClient http) 
+        {
+            _localStorage = localStorage;
+            _http = http;
+        }
 
         public event Action OnChange;
 
-        public CartService(
-            ILocalStorageService localStorage,
-            IToastService toastService,
-            ICarService carService,
-            HttpClient http)
-        {
-            _localStorage = localStorage;
-            _toastService = toastService;
-            _carService = carService;
-            _http = http;
-        }
-        public async Task AddToCart(CartItem item)
+        public async Task AddToCart(CartItem cartItem)
         {
             var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
             if (cart == null)
             {
                 cart = new List<CartItem>();
             }
-
-            var sameItem = cart
-                .Find(x => x.CarId == item.CarId && x.EditionId == item.EditionId);
-            if (sameItem == null)
-            {
-                cart.Add(item);
-            }
-            else
-            {
-                sameItem.Quantity += item.Quantity;
-            }
+            cart.Add(cartItem);
 
             await _localStorage.SetItemAsync("cart", cart);
-
-            //var car = await _carService.GetCar(item.CarId);
-            //_toastService.ShowSuccess(car.Brand);
-
             OnChange.Invoke();
+
         }
 
         public async Task<List<CartItem>> GetCartItems()
         {
             var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-            if(cart == null)
+            if (cart == null)
             {
-                return new List<CartItem>();
+                cart = new List<CartItem>();
             }
-
             return cart;
         }
 
-        public async Task DeleteItem(CartItem item)
+        public async Task<List<CartCarResponseDTO>> GetCartCars()
+        {
+            var cartItems = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+            var response = await _http.PostAsJsonAsync("api/cart/cars", cartItems);
+            var cartCars =
+                await response.Content.ReadFromJsonAsync<ServiceResponse<List<CartCarResponseDTO>>>();
+            return cartCars.Data;
+        }
+
+        public async Task RemoveCarFromCart(int carId, int editionId)
         {
             var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-            if (cart == null)
+            if(cart == null)
             {
                 return;
             }
 
-            var cartItem = cart.Find(x => x.CarId == item.CarId && x.EditionId == item.EditionId);
-            cart.Remove(cartItem);
-
-            await _localStorage.SetItemAsync("cart", cart);
-            OnChange.Invoke();
-        }
-
-        public async Task EmptyCart()
-        {
-            await _localStorage.RemoveItemAsync("cart");
-            OnChange.Invoke();
-        }
-
-        public async Task<string> Checkout()
-        {
-            var result = await _http.PostAsJsonAsync("api/payment/checkout", await GetCartItems());
-            var url = await result.Content.ReadAsStringAsync();
-            return url;
+            var cartItem = cart.Find(x => x.CarId == carId
+                && x.EditionId == editionId);
+            if (cartItem != null)
+            {
+                cart.Remove(cartItem);
+                await _localStorage.SetItemAsync("cart", cart);
+                OnChange.Invoke();
+            }
         }
     }
 }
