@@ -161,6 +161,7 @@ namespace CaRental.Server.Data
         public DbSet<Car> Cars { get; set; }
         public DbSet<Edition> Editions { get; set; }
         public DbSet<CarVariant> CarVariants { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Stats> Stats { get; set; }
 
     }

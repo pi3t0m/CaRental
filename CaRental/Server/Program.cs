@@ -3,11 +3,13 @@ global using CaRental.Server.Data;
 global using CaRental.Server.Services.CarService;
 global using CaRental.Server.Services.CategoryService;
 global using CaRental.Server.Services.CartService;
+global using CaRental.Server.Services.AuthService;
 using CaRental.Server.Services.PaymentService;
 using CaRental.Server.Services.StatsService;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStatsService, StatsService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 

@@ -2,6 +2,7 @@ global using CaRental.Shared;
 global using System.Net.Http.Json;
 global using CaRental.Client.Services.CarService;
 global using CaRental.Client.Services.CategoryService;
+global using CaRental.Client.Services.AuthService;
 using CaRental.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -10,6 +11,7 @@ using Blazored.Toast;
 using CaRental.Client.Services.CartService;
 using Microsoft.AspNetCore.Components.Authorization;
 using CaRental.Client.Services.StatsService;
+
 
 namespace CaRental.Client
 {
@@ -26,6 +28,7 @@ namespace CaRental.Client
             builder.Services.AddScoped<ICarService, CarService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IAuthService , AuthService>();
             builder.Services.AddBlazoredToast();
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
