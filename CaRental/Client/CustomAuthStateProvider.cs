@@ -1,39 +1,71 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace CaRental.Client
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
-        private readonly ILocalStorageService _localStorage;
+        private readonly ILocalStorageService _localStorageService;
+        private readonly HttpClient _http;
 
-        public CustomAuthStateProvider(ILocalStorageService localStorage) 
+        public CustomAuthStateProvider(ILocalStorageService localStorageService, HttpClient http) 
         {
-            _localStorage = localStorage;
+            _localStorageService = localStorageService;
+            _http = http;
         }
-
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var state = new AuthenticationState(new ClaimsPrincipal());
+            string authToken = await _localStorageService.GetItemAsStringAsync("authToken");
 
-            string username = await _localStorage.GetItemAsStringAsync("username");
-            
-            if (!string.IsNullOrEmpty(username))
+            var identity = new ClaimsIdentity();
+            _http.DefaultRequestHeaders.Authorization = null;
+
+            if (!string.IsNullOrEmpty(authToken))
             {
-                /*username = username.Substring(1, username.Length - 2);
-                Console.WriteLine(username);*/
-                var identity = new ClaimsIdentity(new[]
+                try 
                 {
-                    new Claim(ClaimTypes.Name, username)
-                }, "test authentication type");
-
-                state = new AuthenticationState(new ClaimsPrincipal(identity));
+                    identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
+                    _http.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", authToken.Replace("\"",""));
+                }
+                catch 
+                {
+                    await _localStorageService.RemoveItemAsync("authToken");
+                    identity = new ClaimsIdentity();
+                }
             }
+
+            var user = new ClaimsPrincipal(identity);
+            var state = new AuthenticationState(user);
 
             NotifyAuthenticationStateChanged(Task.FromResult(state));
 
             return state;
+        }
+
+        private byte[] ParseBase64WithoutPadding(string base64)
+        {
+            switch(base64.Length % 4)
+            {
+                case 2: base64 += "=="; break;
+                case 3: base64 += "="; break;
+            }
+            return Convert.FromBase64String(base64);
+        }
+
+        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        {
+            var payload = jwt.Split('.')[1];
+            var jsnoBytes = ParseBase64WithoutPadding(payload);
+            var keyValuePairs = JsonSerializer
+                .Deserialize<Dictionary<string, object>>(jsnoBytes);
+
+            var claims = keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+
+            return claims;
         }
     }
 }

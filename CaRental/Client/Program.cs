@@ -3,13 +3,13 @@ global using System.Net.Http.Json;
 global using CaRental.Client.Services.CarService;
 global using CaRental.Client.Services.CategoryService;
 global using CaRental.Client.Services.AuthService;
+global using Microsoft.AspNetCore.Components.Authorization;
 using CaRental.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.LocalStorage;
 using Blazored.Toast;
 using CaRental.Client.Services.CartService;
-using Microsoft.AspNetCore.Components.Authorization;
 using CaRental.Client.Services.StatsService;
 
 
