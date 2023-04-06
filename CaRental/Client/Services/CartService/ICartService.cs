@@ -6,8 +6,10 @@ namespace CaRental.Client.Services.CartService
     {
         event Action OnChange;
         Task AddToCart(CartItem cartItem);
-        Task<List<CartItem>> GetCartItems();
         Task<List<CartCarResponseDTO>> GetCartCars();
         Task RemoveCarFromCart(int carId, int editionId);
+        Task StoreCartItems(bool emptyLocalCart);
+        Task GetCartItemsCount();
+        Task<bool> CheckCars(int carId);
     }
 }

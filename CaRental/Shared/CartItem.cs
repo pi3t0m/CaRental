@@ -8,6 +8,7 @@ namespace CaRental.Shared
 {
     public class CartItem
     {
+        public int UserId { get; set; }
         public int CarId { get; set; }
         public int EditionId { get; set; }
     }
