@@ -45,6 +45,47 @@ namespace CaRental.Server.Services.OrderService
             return response;
         }
 
+        public async Task<ServiceResponse<OrderDetailsResponseDTO>> GetOrderDetails(int orderId)
+        {
+            var response = new ServiceResponse<OrderDetailsResponseDTO>();
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Car)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Edition)
+                .Where(o => o.UserId == _authService.GetUserId() && o.Id == orderId)
+                .OrderByDescending(o => o.OrderDate)
+                .FirstOrDefaultAsync();
+
+            if (order == null)
+            {
+                response.Success = false;
+                response.Message = "Order not found.";
+                return response;
+            }
+
+            var orderDetailsResponse = new OrderDetailsResponseDTO
+            {
+                OrderDate = order.OrderDate,
+                TotalPrice = order.TotalPrice,
+                Cars = new List<OrderDetailsCarResponseDTO>()
+            };
+
+            order.OrderItems.ForEach(item =>
+            orderDetailsResponse.Cars.Add(new OrderDetailsCarResponseDTO
+            {
+                CarId = item.CarId,
+                Image = item.Car.Image,
+                Edition = item.Edition.Name,
+                Brand = item.Car.Brand,
+                TotalPrice = item.TotalPrice
+            }));
+
+            response.Data = orderDetailsResponse;
+
+            return response;
+        }
+
         public async Task<ServiceResponse<bool>> PlaceOrder()
         {
             var cars = (await _cartService.GetDbCartCars()).Data;
