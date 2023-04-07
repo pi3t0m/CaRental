@@ -4,6 +4,7 @@ global using CaRental.Server.Services.CarService;
 global using CaRental.Server.Services.CategoryService;
 global using CaRental.Server.Services.CartService;
 global using CaRental.Server.Services.AuthService;
+global using CaRental.Server.Services.OrderService;
 using CaRental.Server.Services.PaymentService;
 using CaRental.Server.Services.StatsService;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -25,6 +26,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IStatsService, StatsService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

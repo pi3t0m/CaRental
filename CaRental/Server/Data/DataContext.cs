@@ -29,6 +29,9 @@ namespace CaRental.Server.Data
             modelBuilder.Entity<CarVariant>()
                 .HasKey(c => new { c.CarId, c.EditionId });
 
+            modelBuilder.Entity<OrderItem>()
+                .HasKey(oi => new { oi.OrderId, oi.CarId, oi.EditionId });
+
             modelBuilder.Entity<Edition>().HasData(
                 new Edition { Id = 1, Name = "Default" },
                 new Edition { Id = 2, Name = "1 day" },
@@ -166,6 +169,8 @@ namespace CaRental.Server.Data
         public DbSet<CarVariant> CarVariants { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Stats> Stats { get; set; }
 
     }

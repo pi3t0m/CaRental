@@ -10,12 +10,17 @@ namespace CaRental.Server.Services.AuthService
     {
         private readonly DataContext _contex;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(DataContext contex, IConfiguration configuration) 
+        public AuthService(DataContext contex,
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor) 
         {
             _contex = contex;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
+         public int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         public async Task<ServiceResponse<string>> Login(string email, string password)
         {
