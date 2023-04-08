@@ -17,7 +17,13 @@ namespace CaRental.Client.Services.OrderService
             _authStateProvider = authStateProvider;
             _navigationManager = navigationManager;
         }
-        
+
+        public async Task<OrderDetailsResponseDTO> GetOrderDetails(int orderId)
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<OrderDetailsResponseDTO>>($"api/order/{orderId}");
+            return result.Data;
+        }
+
         public async Task<List<OrderOverviewResponseDTO>> GetOrders()
         {
             var result = await _http.GetFromJsonAsync<ServiceResponse<List<OrderOverviewResponseDTO>>>("api/order");
