@@ -74,10 +74,13 @@ namespace CaRental.Server.Services.CartService
             return new ServiceResponse<int> { Data = count };
         }
 
-        public async Task<ServiceResponse<List<CartCarResponseDTO>>> GetDbCartCars()
+        public async Task<ServiceResponse<List<CartCarResponseDTO>>> GetDbCartCars(int? userId = null)
         {
+            if (userId == null)
+                userId = _authService.GetUserId();
+
             return await GetCartCars(await _context.CartItems
-                .Where(ci => ci.UserId == _authService.GetUserId()).ToListAsync());
+                .Where(ci => ci.UserId == userId).ToListAsync());
         }
 
         public async Task<ServiceResponse<bool>> AddToCart(CartItem cartItem)

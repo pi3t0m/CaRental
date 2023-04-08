@@ -1,5 +1,6 @@
 ﻿using CaRental.Server.Services.PaymentService;
 using CaRental.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,19 +12,26 @@ namespace CaRental.Server.Controllers
     {
         private readonly IPaymentService _paymentService;
 
-        public PaymentController(IPaymentService paymentService) 
+        public PaymentController(IPaymentService paymentService)
         {
             _paymentService = paymentService;
         }
 
-        /*
-        [HttpPost("checkout")]
-        public ActionResult CreateCheckoutSession(List<CartItem> cartItems)
+        [HttpPost("checkout"), Authorize]
+        public async Task<ActionResult<string>> CreateCheckoutSession()
         {
-            var session = _paymentService.CreateCheckoutSession(cartItems);
+            var session = await _paymentService.CreateCheckoutSession();
             return Ok(session.Url);
-
         }
-        */
+
+        [HttpPost]
+        public async Task<ActionResult<ServiceResponse<bool>>> FulfillOrder()
+        {
+            var response = await _paymentService.FulfillOrder(Request);
+            if (!response.Success)
+                return BadRequest(response.Message);
+
+            return Ok(response);
+        }
     }
 }

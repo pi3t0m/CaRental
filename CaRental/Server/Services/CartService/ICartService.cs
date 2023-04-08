@@ -5,7 +5,7 @@
         Task<ServiceResponse<List<CartCarResponseDTO>>> GetCartCars(List<CartItem> cartItems);
         Task<ServiceResponse<List<CartCarResponseDTO>>> StoreCartItems(List<CartItem> cartItems);
         Task<ServiceResponse<int>> GetCartItemsCount();
-        Task<ServiceResponse<List<CartCarResponseDTO>>> GetDbCartCars();
+        Task<ServiceResponse<List<CartCarResponseDTO>>> GetDbCartCars(int? userId = null);
         Task<ServiceResponse<bool>> AddToCart(CartItem cartItem);
         Task<ServiceResponse<bool>> RemoveItemFromCart(int carId, int editionId);
     }

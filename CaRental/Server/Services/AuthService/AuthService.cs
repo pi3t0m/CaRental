@@ -20,7 +20,8 @@ namespace CaRental.Server.Services.AuthService
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
-         public int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        public int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        public string GetUserEmail() => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
 
         public async Task<ServiceResponse<string>> Login(string email, string password)
         {
@@ -118,6 +119,11 @@ namespace CaRental.Server.Services.AuthService
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _contex.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
     }
 }

@@ -5,7 +5,7 @@ global using CaRental.Server.Services.CategoryService;
 global using CaRental.Server.Services.CartService;
 global using CaRental.Server.Services.AuthService;
 global using CaRental.Server.Services.OrderService;
-using CaRental.Server.Services.PaymentService;
+global using CaRental.Server.Services.PaymentService;
 using CaRental.Server.Services.StatsService;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;

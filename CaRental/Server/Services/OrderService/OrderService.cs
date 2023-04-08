@@ -86,9 +86,9 @@ namespace CaRental.Server.Services.OrderService
             return response;
         }
 
-        public async Task<ServiceResponse<bool>> PlaceOrder()
+        public async Task<ServiceResponse<bool>> PlaceOrder(int userId)
         {
-            var cars = (await _cartService.GetDbCartCars()).Data;
+            var cars = (await _cartService.GetDbCartCars(userId)).Data;
             decimal totalPrice = 0;
             cars.ForEach(cars => totalPrice += cars.Price);
 
@@ -102,7 +102,7 @@ namespace CaRental.Server.Services.OrderService
 
             var order = new Order
             {
-                UserId = _authService.GetUserId(),
+                UserId = userId,
                 OrderDate = DateTime.Now,
                 TotalPrice = totalPrice,
                 OrderItems = orderItems
@@ -111,7 +111,7 @@ namespace CaRental.Server.Services.OrderService
             _context.Orders.Add(order);
 
             _context.CartItems.RemoveRange(_context.CartItems
-                .Where(ci => ci.UserId == _authService.GetUserId()));
+                .Where(ci => ci.UserId == userId));
 
             await _context.SaveChangesAsync();
 

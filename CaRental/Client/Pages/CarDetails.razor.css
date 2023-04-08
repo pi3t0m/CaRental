@@ -4,6 +4,10 @@
     text-align: right;
 }
 
+.media-body {
+    margin-left: 20px;
+}
+
 .media-img {
     max-height: 500px;
     max-width: 500px;
