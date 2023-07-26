@@ -4,6 +4,7 @@ using CaRental.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CaRental.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230726090515_UserRole")]
+    partial class UserRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -221,9 +224,6 @@ namespace CaRental.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Icon")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -236,9 +236,6 @@ namespace CaRental.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
@@ -247,29 +244,23 @@ namespace CaRental.Server.Migrations
                         new
                         {
                             Id = 1,
-                            Deleted = false,
                             Icon = "plus",
                             Name = "Exclusives",
-                            Url = "exclusive",
-                            Visible = true
+                            Url = "exclusive"
                         },
                         new
                         {
                             Id = 2,
-                            Deleted = false,
                             Icon = "plus",
                             Name = "Sports",
-                            Url = "sport",
-                            Visible = true
+                            Url = "sport"
                         },
                         new
                         {
                             Id = 3,
-                            Deleted = false,
                             Icon = "plus",
                             Name = "Oldschool",
-                            Url = "oldschool",
-                            Visible = true
+                            Url = "oldschool"
                         });
                 });
 
