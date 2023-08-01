@@ -8,5 +8,6 @@
         Task<ServiceResponse<CarSearchResultDTO>> SearchCars(string searchText, int page);
         Task<ServiceResponse<List<string>>> GetCarSearchSuggestions(string searchText);
         Task<ServiceResponse<List<Car>>> GetFeaturedCars();
+        Task<ServiceResponse<List<Car>>> GetAdminCars();
     }
 }

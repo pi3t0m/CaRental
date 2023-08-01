@@ -22,9 +22,9 @@ namespace CaRental.Server.Services.CarService
         {
             var response = new ServiceResponse<Car>();
             var car = await _context.Cars
-                .Include(c => c.Variants)
+                .Include(c => c.Variants.Where(v=> v.Visible && !v.Deleted))
                 .ThenInclude(v => v.Edition)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id && !c.Deleted && c.Visible);
             if (car == null)
             {
                 response.Success = false;
@@ -42,7 +42,10 @@ namespace CaRental.Server.Services.CarService
         {
             var response = new ServiceResponse<List<Car>>()
             {
-                Data = await _context.Cars.Include(c => c.Variants).ToListAsync()
+                Data = await _context.Cars
+                .Where(c => c.Visible && !c.Deleted)
+                .Include(c => c.Variants.Where(v => v.Visible && !v.Deleted))
+                .ToListAsync()
             };
 
             return response;
@@ -53,8 +56,9 @@ namespace CaRental.Server.Services.CarService
             var response = new ServiceResponse<List<Car>>
             {
                 Data = await _context.Cars
-                    .Where(c => c.Category.Url.ToLower().Equals(CategoryUrl.ToLower()))
-                    .Include(c => c.Variants)
+                    .Where(c => c.Category.Url.ToLower().Equals(CategoryUrl.ToLower()) && 
+                        c.Visible && !c.Deleted)
+                    .Include(c => c.Variants.Where(v => v.Visible && !v.Deleted))
                     .ToListAsync()
             };
 
@@ -100,9 +104,9 @@ namespace CaRental.Server.Services.CarService
             var pageResults = 2f;
             var pageCount = Math.Ceiling((await FindCarsBySearchText(searchText)).Count / pageResults);
             var cars = await _context.Cars
-                                .Where(c => c.Brand.ToLower().Contains(searchText.ToLower())
-                                ||
-                                c.Description.ToLower().Contains(searchText.ToLower()))
+                                .Where(c => c.Brand.ToLower().Contains(searchText.ToLower()) || 
+                                    c.Description.ToLower().Contains(searchText.ToLower()) && 
+                                    c.Visible && !c.Deleted)
                                 .Include(c => c.Variants)
                                 .Skip((page -1) * (int)pageResults)
                                 .Take((int)pageResults)
@@ -124,9 +128,9 @@ namespace CaRental.Server.Services.CarService
         private async Task<List<Car>> FindCarsBySearchText(string searchText)
         {
             return await _context.Cars
-                                .Where(c => c.Brand.ToLower().Contains(searchText.ToLower())
-                                ||
-                                c.Description.ToLower().Contains(searchText.ToLower()))
+                                .Where(c => c.Brand.ToLower().Contains(searchText.ToLower()) ||
+                                    c.Description.ToLower().Contains(searchText.ToLower()) && 
+                                    c.Visible && !c.Deleted)
                                 .Include(c => c.Variants)
                                 .ToListAsync();
         }
@@ -136,9 +140,22 @@ namespace CaRental.Server.Services.CarService
             var response = new ServiceResponse<List<Car>>
             {
                 Data = await _context.Cars
-                    .Where(c => c.Featured)
-                    .Include(c => c.Variants)
+                    .Where(c => c.Featured && c.Visible && !c.Deleted)
+                    .Include(c => c.Variants.Where(v => v.Visible && !v.Deleted))
                     .ToListAsync()
+            };
+
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<Car>>> GetAdminCars()
+        {
+            var response = new ServiceResponse<List<Car>>()
+            {
+                Data = await _context.Cars
+                .Where(c => !c.Deleted)
+                .Include(c => c.Variants.Where(v => !v.Deleted))
+                .ToListAsync()
             };
 
             return response;

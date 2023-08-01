@@ -6,6 +6,7 @@ namespace CaRental.Client.Services.CarService
     {
         event Action CarsChanged;
         List<Car> Cars { get; set; }
+        List<Car> AdminCars { get; set; }
         string Message { get; set; }
         int CurrentPage { get; set; }
         int PageCount { get; set; }
@@ -14,5 +15,6 @@ namespace CaRental.Client.Services.CarService
         Task<ServiceResponse<Car>> GetCar(int id);
         Task SearchCars(string searchText, int page);
         Task<List<string>> GetCarSearchSuggestions(string searchText);
+        Task GetAdminCars();
     }
 }

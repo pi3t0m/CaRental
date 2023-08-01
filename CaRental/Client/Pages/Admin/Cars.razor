@@ -1,0 +1,52 @@
+﻿@page "/admin/cars"
+@inject ICarService CarService
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Cars</h3>
+
+@if (CarService.AdminCars == null)
+{
+    <span>Loading Cars...</span>
+}
+else
+{
+    <table class="table">
+        <thed>
+            <tr>
+                <th></th>
+                <th>Car</th>
+                <th>Variant</th>
+                <th>Price</th>
+                <th>Visible</th>
+                <th></th>
+            </tr>
+        </thed>
+        <tbody>
+            <Virtualize Items="CarService.AdminCars" Context="car">
+                <tr>
+                    <td><img src="@car.Image" /></td>
+                    <td>@car.Brand</td>
+                    <td>
+                        @foreach (var variant in car.Variants)
+                        {
+                            <span>@variant.Edition.Name</span><br/>
+                        }
+                    </td>
+                </tr>
+                
+            </Virtualize>
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await CarService.GetAdminCars();
+    }
+
+    void EditCar(int carId)
+    {
+        
+    }
+}

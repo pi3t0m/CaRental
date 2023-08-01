@@ -1,0 +1,77 @@
+﻿@page "/admin/editions"
+@inject IEditionService EditionService
+@implements IDisposable
+@attribute [Authorize(Roles ="Admin")]
+
+<h3>Editions</h3>
+
+@foreach (var edition in EditionService.Editions)
+{
+    @if (edition.Editing) 
+    {
+        <EditForm Model="editingEdition" OnSubmit="UpdateEdition">
+            <div class="row">
+                <div class="col">
+                    <InputText @bind-Value="editingEdition.Name" class="form-control"></InputText>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="oi oi-cloud-upload"></i>
+                    </button>
+                </div>
+            </div>
+        </EditForm>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col">
+                @edition.Name
+            </div>
+            <div class="col">
+                <button class="btn btn-primary" @onclick="@(() => EditEdition(edition))">
+                    <i class="oi oi-pencil"></i>
+                </button>
+            </div>
+        </div>
+    }
+}
+<button class="btn btn-primary" @onclick="CreateNewEdition">
+    <i class="oi oi-plus"></i> Add new edition
+</button>
+
+@code {
+    Edition editingEdition = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await EditionService.GetEditions();
+        EditionService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        EditionService.OnChange -= StateHasChanged;
+    }
+
+    private void EditEdition(Edition edition) 
+    {
+        edition.Editing = true;
+        editingEdition = edition;
+    }
+
+    private void CreateNewEdition()
+    {
+        editingEdition = EditionService.CreateNewEdition();
+    }
+
+    private async Task UpdateEdition()
+    {
+        if (editingEdition.IsNew)
+            await EditionService.AddEdition(editingEdition);
+        else
+            await EditionService.UpdateEdition(editingEdition);
+        editingEdition = new Edition();
+    }
+}
+

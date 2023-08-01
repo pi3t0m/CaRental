@@ -19,5 +19,11 @@ namespace CaRental.Shared
         public decimal Price { get; set; }
         [Column(TypeName = "Decimal(18,2)")]
         public decimal OrginalPrice { get; set; }
+        public bool Visible { get; set; } = true;
+        public bool Deleted { get; set; } = false;
+        [NotMapped]
+        public bool Editing { get; set; } = false;
+        [NotMapped]
+        public bool IsNew { get; set; } = false;
     }
 }

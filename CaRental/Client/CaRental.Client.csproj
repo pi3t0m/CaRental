@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Pages\Admin\Cars.razor.css" />
+    <None Remove="Pages\Admin\Editions.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Pages\Admin\Cars.razor.css" />
+    <Content Include="Pages\Admin\Editions.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="Blazored.Toast" Version="4.1.0" />
     <PackageReference Include="Blazored.Typeahead" Version="4.7.0" />

@@ -1,6 +1,7 @@
 ﻿using CaRental.Client.Pages;
 using CaRental.Server.Services.CarService;
 using CaRental.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,13 @@ namespace CaRental.Server.Controllers
         public CarController(ICarService carService)
         {
             _carService = carService;
+        }
+
+        [HttpGet("Admin"), Authorize(Roles ="Admin")]
+        public async Task<ActionResult<ServiceResponse<List<Car>>>> GetAdminCars()
+        {
+            var result = await _carService.GetAdminCars();
+            return Ok(result);
         }
 
         [HttpGet]

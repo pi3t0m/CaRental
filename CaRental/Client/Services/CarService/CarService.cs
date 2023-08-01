@@ -19,6 +19,7 @@ namespace CaRental.Client.Services.CarService
         public int CurrentPage { get; set; } = 1;
         public int PageCount { get; set; } = 0;
         public string LastSearchText { get; set; } = string.Empty;
+        public List<Car> AdminCars { get ; set; }
 
         public CarService(HttpClient http) 
         {
@@ -70,6 +71,17 @@ namespace CaRental.Client.Services.CarService
                 
             if (Cars.Count == 0) Message = "No cars found.";
             CarsChanged?.Invoke();
+        }
+
+        public async Task GetAdminCars()
+        {
+            var result = await _http
+                .GetFromJsonAsync<ServiceResponse<List<Car>>>("api/Car/admin");
+            AdminCars = result.Data;
+            CurrentPage = 1;
+            PageCount = 0;
+            if (AdminCars.Count == 0)
+                Message = "no cars found.";
         }
     }
 }
