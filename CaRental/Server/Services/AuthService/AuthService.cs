@@ -126,5 +126,26 @@ namespace CaRental.Server.Services.AuthService
         {
             return await _contex.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
+
+        public async Task<ServiceResponse<bool>> ChangePassword(int userId, string NewPassowrd)
+        {
+            var user = await _contex.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return new ServiceResponse<bool> { 
+                    Success = false,
+                    Message = "User not found."
+                };
+            }
+
+            CreatePasswordHash(NewPassowrd, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PaswordSalt = passwordSalt;
+
+            await _contex.SaveChangesAsync();
+
+            return new ServiceResponse<bool> { Data = true, Message = "Password has been changed." };
+        }
     }
 }

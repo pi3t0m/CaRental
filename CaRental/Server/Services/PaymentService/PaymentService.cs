@@ -18,7 +18,7 @@ namespace CaRental.Server.Services.PaymentService
             IAuthService authService,
             IOrderService orderService)
         {
-            StripeConfiguration.ApiKey = "sk_test_51Mm2kKF0PDfFtOyogmRyX85qgph73wgy3fSpGXQva87Dn6FZEC9WlLovRs9rOJIYp6gll1srcjKEZgYNoeGDvsMJ00LOf4yWAC";
+            StripeConfiguration.ApiKey = "sk_test_51Mm2kKF0PDfFtOyovgQzHJEvFDQvTDrUMAXV5L5E2M0EIjzTqPfOpJf9HW2JgTpFOJ81bODIZhT144C72Ocdrl5400ChmSTnr4";
 
             _cartService = cartService;
             _authService = authService;

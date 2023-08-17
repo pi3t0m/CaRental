@@ -13,6 +13,12 @@ namespace CaRental.Client.Services.AuthService
             _authStateProvider = authStateProvider;
         }
 
+        public async Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request)
+        {
+            var result = await _http.PostAsJsonAsync("api/auth/change-password", request.Password);
+            return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+        }
+
         public async Task<bool> IsUserAuthenticated()
         {
             return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
