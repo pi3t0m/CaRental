@@ -1,0 +1,198 @@
+﻿@page "/admin/car"
+@page "/admin/car/{id:int}"
+@inject ICarService CarService
+@inject IEditionService EditionService
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+@if (loading)
+{
+    <span>@msg</span>
+}
+else
+{
+    @if (car.Editing)
+    {
+        <h3>Edit "@car.Brand"</h3>
+    }
+    else if (car.IsNew)
+    {
+        <h3>Create a new Car</h3>
+    }
+
+    <EditForm Model="car" OnValidSubmit="AddorUpdateCar">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <div class="mb-0">
+            <label for="brand">Brand</label>
+            <InputText id="brand" @bind-Value="car.Brand" class="form-control"></InputText>
+        </div>
+        <div class="mb-0">
+            <label for="image">Image</label>
+            <InputText id="image" @bind-Value="car.Image" class="form-control"></InputText>
+        </div>
+        <div class="mb-0">
+            <img src="@car.Image" />
+        </div>
+        <div class="mb-0">
+            <label for="description">Description</label>
+            <InputTextArea id="description" @bind-Value="car.Description" class="form-control"></InputTextArea>
+        </div>
+        <hr />
+        <div class="header">
+            <div class="col">Edition / Variant</div>
+            <div class="col">Price</div>
+            <div class="col">Orginal Price</div>
+            <div class="col">Visible</div>
+            <div class="col"></div>
+        </div>
+        @foreach (var variant in car.Variants)
+        {
+            <div class="row">
+                <div class="col">
+                    <InputSelect disabled="@variant.Deleted" @bind-Value="variant.EditionId" class="form-control">
+                        @foreach (var edition in EditionService.Editions)
+                        {
+                            <option value="@edition.Id.ToString()">@edition.Name</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="col">
+                    <InputNumber @bind-Value="variant.Price" class="form-conrol" disabled="@variant.Deleted"></InputNumber>
+                </div>
+                <div class="col">
+                    <InputNumber @bind-Value="variant.OrginalPrice" class="form-conrol" disabled="@variant.Deleted"></InputNumber>
+                </div>
+                <div class="col col-visible">
+                    <InputCheckbox @bind-Value="variant.Visible" style="transform:scale(1.5,1.5)" disabled="@variant.Deleted"></InputCheckbox>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" disabled="@variant.Deleted" @onclick="@(() => RemoveVariant(variant.EditionId))">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        }
+        <button type="button" class="btn btn-primary" @onclick="AddVariant">
+            <i class="oi oi-plus"></i> Add Variant
+        </button> 
+        <hr />
+        <div class="mb-0">
+            <label for="category">Category</label>
+            <InputSelect id="category" @bind-Value="car.CategoryId" class="form-control">
+                @foreach (var category in CategoryService.AdminCategories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
+        <hr />
+        <div class="form-check">
+            <InputCheckbox id="featured" @bind-Value="car.Featured" class="form-check-input"></InputCheckbox>
+            <label for="featured" class="form-check-label">Featured</label>
+        </div>
+        <div class="form-check">
+            <InputCheckbox id="visible" @bind-Value="car.Visible" class="form-check-input"></InputCheckbox>
+            <label for="visible" class="form-check-label">Visible</label>
+        </div>
+        <hr />
+        <button type="submit" class="btn btn-primary float-end">@btnText</button>
+        <ValidationSummary></ValidationSummary>
+    </EditForm>
+    @if (!car.IsNew) 
+    {
+        <button type="button" class="btn btn-danger float-start" @onclick="DeleteCar">
+            Delete Car
+        </button>
+        
+
+    }
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    Car car = new Car();
+    bool loading = true;
+    string btnText = "";
+    string msg = "Loading...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await EditionService.GetEditions();
+        await CategoryService.GetAdminCategories();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == 0)
+        {
+            car = new Car { IsNew = true };
+            btnText = "Create Car";
+        }
+        else
+        {
+            Car dbCar = (await CarService.GetCar(Id)).Data;
+            if (dbCar == null)
+            {
+                msg = $"Car with Id '{Id}' does not exist!";
+                return;
+            }
+            car = dbCar;
+            car.Editing = true;
+            btnText = "Update Car";
+        }
+        loading = false;
+    }
+
+    void RemoveVariant(int editionId)
+    {
+        var variant = car.Variants.Find( v => v.EditionId == editionId);
+        if (variant == null)
+        {
+            return;
+        }
+        if (variant.IsNew)
+        {
+            car.Variants.Remove(variant);
+        }
+        else
+        {
+            variant.Deleted = true;
+        }
+    }
+
+    void AddVariant()
+    {
+        car.Variants
+            .Add(new CarVariant { IsNew = true, EditionId = car.Id });
+    }
+
+    async void AddorUpdateCar()
+    {
+        if (car.IsNew)
+        {
+            var result = await CarService.CreateCar(car);
+            NavigationManager.NavigateTo($"admin/Car/{result.Id}");
+        }
+        else
+        {
+            car.IsNew = false; 
+            car = await CarService.UpdateCar(car);
+            NavigationManager.NavigateTo($"admin/Car/{car.Id}", true);
+        }
+    }
+
+    async void DeleteCar()
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm",
+            $"Do you really want to delete '{car.Brand}'?");
+        if(confirmed)
+        {
+            await CarService.DeleteCar(car);
+            NavigationManager.NavigateTo("admin/cars");
+        }
+        
+    }
+}

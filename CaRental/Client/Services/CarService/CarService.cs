@@ -83,5 +83,27 @@ namespace CaRental.Client.Services.CarService
             if (AdminCars.Count == 0)
                 Message = "no cars found.";
         }
+
+        public async Task<Car> CreateCar(Car car)
+        {
+            var result = await _http.PostAsJsonAsync("api/Car", car);
+            var newCar = (await result.Content
+                .ReadFromJsonAsync<ServiceResponse<Car>>()).Data;
+            return newCar;
+        }
+
+        public async Task<Car> UpdateCar(Car car)
+        {
+            Console.WriteLine("przed result");
+            var result = await _http.PutAsJsonAsync($"api/Car", car);
+            var content =  await result.Content.ReadFromJsonAsync<ServiceResponse<Car>>();
+            Console.WriteLine("po result");
+            return content.Data;
+        }
+
+        public async Task DeleteCar(Car car)
+        {
+            var result = await _http.DeleteAsync($"api/Car/{car.Id}");
+        }
     }
 }

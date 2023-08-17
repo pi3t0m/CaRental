@@ -25,6 +25,26 @@ namespace CaRental.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost, Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<Car>>> CreateCar(Car car)
+        {
+            var result = await _carService.CreateCar(car);
+            return Ok(result);
+        }
+
+        [HttpPut, Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<Car>>>UpdateCar(Car car)
+        {
+            var result = await _carService.UpdateCar(car);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<bool>>> DeleteCar(int id)
+        {
+            var result = await _carService.DeleteCar(id);
+            return Ok(result);
+        }
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<Car>>>> GetCars() 
         {

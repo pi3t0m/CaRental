@@ -16,5 +16,9 @@ namespace CaRental.Client.Services.CarService
         Task SearchCars(string searchText, int page);
         Task<List<string>> GetCarSearchSuggestions(string searchText);
         Task GetAdminCars();
+        Task <Car> CreateCar(Car car);
+        Task<Car> UpdateCar(Car car);
+        Task DeleteCar(Car car);
+
     }
 }

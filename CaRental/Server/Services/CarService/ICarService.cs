@@ -9,5 +9,8 @@
         Task<ServiceResponse<List<string>>> GetCarSearchSuggestions(string searchText);
         Task<ServiceResponse<List<Car>>> GetFeaturedCars();
         Task<ServiceResponse<List<Car>>> GetAdminCars();
+        Task<ServiceResponse<Car>> CreateCar(Car car);
+        Task<ServiceResponse<Car>> UpdateCar(Car car);
+        Task<ServiceResponse<bool>> DeleteCar(int id);
     }
 }

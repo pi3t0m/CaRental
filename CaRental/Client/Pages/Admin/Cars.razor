@@ -1,5 +1,6 @@
 ﻿@page "/admin/cars"
 @inject ICarService CarService
+@inject NavigationManager NavigationManager
 @attribute [Authorize(Roles = "Admin")]
 
 <h3>Cars</h3>
@@ -10,8 +11,11 @@
 }
 else
 {
+    <button class="btn btn-primary float-end" @onclick="CreateCar">
+        <i class="oi oi-plus"></i> Add new car
+    </button>
     <table class="table">
-        <thed>
+        <thead>
             <tr>
                 <th></th>
                 <th>Car</th>
@@ -20,7 +24,7 @@ else
                 <th>Visible</th>
                 <th></th>
             </tr>
-        </thed>
+        </thead>
         <tbody>
             <Virtualize Items="CarService.AdminCars" Context="car">
                 <tr>
@@ -29,8 +33,24 @@ else
                     <td>
                         @foreach (var variant in car.Variants)
                         {
-                            <span>@variant.Edition.Name</span><br/>
+                            <span>@variant.Edition.Name</span>
+                            
+                            <br/>
                         }
+                    </td>
+                    <td>
+                        @foreach (var variant in car.Variants)
+                        {
+                            <span>@variant.Price</span>
+                            
+                            <br/>
+                        }
+                    </td>
+                    <td>@(car.Visible ? "✔️" : "")</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="(() => EditCar(car.Id))">
+                            <i class="oi oi-pencil"></i>
+                        </button>
                     </td>
                 </tr>
                 
@@ -47,6 +67,11 @@ else
 
     void EditCar(int carId)
     {
-        
+        NavigationManager.NavigateTo($"admin/car/{carId}");
+    }
+
+    void CreateCar()
+    {
+        NavigationManager.NavigateTo("admin/car");
     }
 }

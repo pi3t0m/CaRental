@@ -11,9 +11,9 @@ namespace CaRental.Shared
     public class CarVariant
     {
         [JsonIgnore]
-        public Car Car { get; set; }
+        public Car? Car { get; set; }
         public int CarId { get; set; }
-        public Edition Edition { get; set; }
+        public Edition? Edition { get; set; }
         public int EditionId { get; set; }
         [Column(TypeName = "Decimal(18,2)")]
         public decimal Price { get; set; }

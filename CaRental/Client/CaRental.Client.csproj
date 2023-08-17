@@ -7,12 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Pages\Admin\Cars.razor.css" />
     <None Remove="Pages\Admin\Editions.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Pages\Admin\Cars.razor.css" />
     <Content Include="Pages\Admin\Editions.razor.css" />
   </ItemGroup>
 

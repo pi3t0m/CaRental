@@ -11,20 +11,35 @@ namespace CaRental.Server.Services.CarService
     {
         private readonly ICategoryService _categoryService;
         private readonly DataContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CarService(ICategoryService categoryService, DataContext context)
+        public CarService(ICategoryService categoryService, DataContext context, IHttpContextAccessor httpContextAccessor)
         {
             _categoryService = categoryService;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ServiceResponse<Car>> GetCarAsync(int id)
         {
             var response = new ServiceResponse<Car>();
-            var car = await _context.Cars
-                .Include(c => c.Variants.Where(v=> v.Visible && !v.Deleted))
-                .ThenInclude(v => v.Edition)
-                .FirstOrDefaultAsync(c => c.Id == id && !c.Deleted && c.Visible);
+            Car car = null;
+
+            if (_httpContextAccessor.HttpContext.User.IsInRole("Admin"))
+            {
+                car = await _context.Cars
+                    .Include(c => c.Variants.Where(v => !v.Deleted))
+                    .ThenInclude(v => v.Edition)
+                    .FirstOrDefaultAsync(c => c.Id == id && !c.Deleted);
+            }
+            else
+            {
+                car = await _context.Cars
+                    .Include(c => c.Variants.Where(v => v.Visible && !v.Deleted))
+                    .ThenInclude(v => v.Edition)
+                    .FirstOrDefaultAsync(c => c.Id == id && !c.Deleted && c.Visible);
+            }
+            
             if (car == null)
             {
                 response.Success = false;
@@ -150,15 +165,87 @@ namespace CaRental.Server.Services.CarService
 
         public async Task<ServiceResponse<List<Car>>> GetAdminCars()
         {
-            var response = new ServiceResponse<List<Car>>()
+            var response = new ServiceResponse<List<Car>>
             {
                 Data = await _context.Cars
                 .Where(c => !c.Deleted)
                 .Include(c => c.Variants.Where(v => !v.Deleted))
+                .ThenInclude(v => v.Edition)
                 .ToListAsync()
             };
 
             return response;
+        }
+
+        public async Task<ServiceResponse<Car>> CreateCar(Car car)
+        {
+            foreach ( var variant in car.Variants)
+            {
+                variant.Edition = null;
+            }
+            _context.Cars.Add(car);
+            await _context.SaveChangesAsync();
+            return new ServiceResponse<Car> { Data = car };
+        }
+
+        public async Task<ServiceResponse<Car>> UpdateCar(Car car)
+        {
+            var dbCar = await _context.Cars.FirstOrDefaultAsync(c => c.Id == car.Id);
+            if (dbCar == null)
+            {
+                return new ServiceResponse<Car>
+                {
+                    Success = false,
+                    Message = "Car not found."
+                };
+            }
+            dbCar.Brand = car.Brand;
+            dbCar.Description = car.Description;
+            dbCar.Image = car.Image;
+            dbCar.CategoryId = car.CategoryId;
+            dbCar.Visible = car.Visible;
+            dbCar.Featured = car.Featured;
+
+            foreach (var variant in car.Variants)
+            {
+                var dbVariant = await _context.CarVariants
+                    .SingleOrDefaultAsync(v => v.CarId == variant.CarId &&
+                        v.EditionId == variant.EditionId);
+                if (dbVariant == null)
+                {
+                    variant.Edition = null;
+                    variant.CarId = car.Id;
+                    _context.CarVariants.Add(variant);
+                }
+                else
+                {
+                    dbVariant.EditionId = variant.EditionId;
+                    dbVariant.Price = variant.Price;
+                    dbVariant.OrginalPrice = variant.OrginalPrice;
+                    dbVariant.Visible = variant.Visible;
+                    dbVariant.Deleted = variant.Deleted;
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new ServiceResponse<Car> { Data = car };
+        }
+
+        public async Task<ServiceResponse<bool>> DeleteCar(int id)
+        {
+            var dbCar = await _context.Cars.FindAsync(id);
+            if(dbCar == null)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Success = false,
+                    Data = false,
+                    Message = "Car not found."
+                };
+            }
+
+            dbCar.Deleted = true;
+            await _context.SaveChangesAsync();
+            return new ServiceResponse<bool> { Data = true };
         }
     }
 }
