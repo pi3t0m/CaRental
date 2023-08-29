@@ -6,6 +6,7 @@ global using CaRental.Client.Services.AuthService;
 global using Microsoft.AspNetCore.Components.Authorization;
 global using CaRental.Client.Services.OrderService;
 global using CaRental.Client.Services.EditionService;
+global using CaRental.Client.Services.AddressService;
 using CaRental.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -37,6 +38,7 @@ namespace CaRental.Client
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
             builder.Services.AddScoped<IStatsService, StatsService>();
             builder.Services.AddScoped<IEditionService, EditionService>();
+            builder.Services.AddScoped<IAddressService, AddressService>();
 
             await builder.Build().RunAsync();
         }
