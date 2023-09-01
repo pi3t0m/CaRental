@@ -30,6 +30,7 @@ namespace CaRental.Server.Services.CarService
                 car = await _context.Cars
                     .Include(c => c.Variants.Where(v => !v.Deleted))
                     .ThenInclude(v => v.Edition)
+                    .Include(c => c.FileImages)
                     .FirstOrDefaultAsync(c => c.Id == id && !c.Deleted);
             }
             else
@@ -37,6 +38,7 @@ namespace CaRental.Server.Services.CarService
                 car = await _context.Cars
                     .Include(c => c.Variants.Where(v => v.Visible && !v.Deleted))
                     .ThenInclude(v => v.Edition)
+                    .Include(c => c.FileImages)
                     .FirstOrDefaultAsync(c => c.Id == id && !c.Deleted && c.Visible);
             }
             
@@ -60,6 +62,7 @@ namespace CaRental.Server.Services.CarService
                 Data = await _context.Cars
                 .Where(c => c.Visible && !c.Deleted)
                 .Include(c => c.Variants.Where(v => v.Visible && !v.Deleted))
+                .Include(c => c.FileImages)
                 .ToListAsync()
             };
 
@@ -74,6 +77,7 @@ namespace CaRental.Server.Services.CarService
                     .Where(c => c.Category.Url.ToLower().Equals(CategoryUrl.ToLower()) && 
                         c.Visible && !c.Deleted)
                     .Include(c => c.Variants.Where(v => v.Visible && !v.Deleted))
+                    .Include(c => c.FileImages)
                     .ToListAsync()
             };
 
@@ -123,6 +127,7 @@ namespace CaRental.Server.Services.CarService
                                     c.Description.ToLower().Contains(searchText.ToLower()) && 
                                     c.Visible && !c.Deleted)
                                 .Include(c => c.Variants)
+                                .Include(c => c.FileImages)
                                 .Skip((page -1) * (int)pageResults)
                                 .Take((int)pageResults)
                                 .ToListAsync();
@@ -157,6 +162,7 @@ namespace CaRental.Server.Services.CarService
                 Data = await _context.Cars
                     .Where(c => c.Featured && c.Visible && !c.Deleted)
                     .Include(c => c.Variants.Where(v => v.Visible && !v.Deleted))
+                    .Include(c => c.FileImages)
                     .ToListAsync()
             };
 
@@ -171,6 +177,7 @@ namespace CaRental.Server.Services.CarService
                 .Where(c => !c.Deleted)
                 .Include(c => c.Variants.Where(v => !v.Deleted))
                 .ThenInclude(v => v.Edition)
+                .Include(c => c.FileImages)
                 .ToListAsync()
             };
 
@@ -190,7 +197,9 @@ namespace CaRental.Server.Services.CarService
 
         public async Task<ServiceResponse<Car>> UpdateCar(Car car)
         {
-            var dbCar = await _context.Cars.FirstOrDefaultAsync(c => c.Id == car.Id);
+            var dbCar = await _context.Cars
+                .Include(c => c.FileImages)
+                .FirstOrDefaultAsync(c => c.Id == car.Id);
             if (dbCar == null)
             {
                 return new ServiceResponse<Car>
@@ -205,6 +214,11 @@ namespace CaRental.Server.Services.CarService
             dbCar.CategoryId = car.CategoryId;
             dbCar.Visible = car.Visible;
             dbCar.Featured = car.Featured;
+
+            var carImages = dbCar.FileImages;
+            _context.FileImages.RemoveRange(carImages);
+
+            dbCar.FileImages = car.FileImages;
 
             foreach (var variant in car.Variants)
             {

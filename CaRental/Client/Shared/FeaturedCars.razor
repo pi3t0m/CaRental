@@ -16,7 +16,14 @@ else
                 <div class="featured-car">
                     <div>
                         <a href="car/@car.Id">
-                           <img src="@car.Image">
+                            @if (!string.IsNullOrEmpty(car.Image))
+                            {
+                                <img src="@car.Image">
+                            }
+                            else if(car.FileImages.Count > 0)
+                            {
+                                <img src="@car.FileImages[0].Data" />
+                            }
                         </a>
                     </div>
                     <h4><a href="car/@car.Id">@car.Brand</a></h4>

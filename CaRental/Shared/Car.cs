@@ -15,6 +15,7 @@ namespace CaRental.Shared
         public string Brand { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
+        public List<FileImage> FileImages { get; set; } = new List<FileImage>();
         public bool IsPublic { get; set; }
         public bool IsDeleted { get; set; }
         public Category? Category { get; set; }

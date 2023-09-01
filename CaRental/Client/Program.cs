@@ -14,6 +14,7 @@ using Blazored.LocalStorage;
 using Blazored.Toast;
 using CaRental.Client.Services.CartService;
 using CaRental.Client.Services.StatsService;
+using MudBlazor.Services;
 
 namespace CaRental.Client
 {
@@ -26,6 +27,7 @@ namespace CaRental.Client
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddMudServices();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<ICarService, CarService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();

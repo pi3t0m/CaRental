@@ -28,7 +28,16 @@ else
         <tbody>
             <Virtualize Items="CarService.AdminCars" Context="car">
                 <tr>
-                    <td><img src="@car.Image" /></td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(car.Image))
+                        {
+                            <img src="@car.Image" />
+                        }
+                        else if(car.FileImages.Count >0)
+                        {
+                            <img src="@car.FileImages[0].Data" />
+                        }
+                    </td>
                     <td>@car.Brand</td>
                     <td>
                         @foreach (var variant in car.Variants)

@@ -4,14 +4,14 @@
     text-align: right;
 }
 
-.media-body {
-    margin-left: 20px;
+.alert-success {
+    max-width: 250px;
 }
 
-.media-img {
+﻿.media-img {
     max-height: 500px;
     max-width: 500px;
-    border-radius: 6px;
+    border-radius: 4px;
     margin: 0 10px 10px 10px;
 }
 
@@ -21,18 +21,15 @@
     text-align: center;
 }
 
-.orginal-price {
+.original-price {
     text-decoration: line-through;
-}
-
-.alert-success {
-    max-width: 250px;
 }
 
 @media (max-width: 1023.98px) {
     .media {
         flex-direction: column;
     }
+
     .media-img {
         max-width: 300px;
     }

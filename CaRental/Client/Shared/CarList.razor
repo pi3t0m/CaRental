@@ -14,7 +14,14 @@ else
         <li class="media my-3">
             <div class="media-img-wrapper mr-2">
                 <a href="/car/@car.Id">
-                    <img class="media-img" src="@car.Image" alt="@car.Brand" />
+                    @if(!string.IsNullOrEmpty(car.Image))
+                    {
+                        <img class="media-img" src="@car.Image" alt="@car.Brand" />
+                    }
+                    else if (car.FileImages.Count > 0)
+                    {
+                        <img class="media-img" src="@car.FileImages[0].Data" alt="@car.Brand" />
+                    }
                 </a>
             </div>
             <div class="media-body">
